@@ -332,7 +332,7 @@ function setup() {
         hideLoader();
         setupGalleryNavigation();
         loadDocument(currentIndex);
-        showFileName();
+        showDocumentDescription();
         updateFullscreenButtonPosition();
 
         console.log("Documents updated via postMessage:", documents.length, "documents, index:", currentIndex);
@@ -385,7 +385,7 @@ function setup() {
 
         // Load the selected document
         loadDocument(currentIndex);
-        showFileName();
+        showDocumentDescription();
         updateNavButtonVisibility();
 
         console.log("Document selected successfully, new index:", currentIndex);
@@ -474,7 +474,7 @@ function setup() {
     }
   }
 
-  function showFileName() {
+  function showDocumentDescription() {
     const currentDoc = documents[currentIndex];
     if (!currentDoc) return;
 
@@ -483,12 +483,42 @@ function setup() {
       description = `Документ №${currentIndex + 1}`;
     }
 
-    descriptionDisplay.textContent = description;
+    descriptionDisplay.innerHTML = '';
+    descriptionDisplay.className = "description-display";
     descriptionDisplay.classList.remove("hidden", "fade-out");
 
+    const descriptionText = document.createElement('div');
+    descriptionText.className = 'description-text';
+    descriptionText.textContent = description;
+    descriptionDisplay.appendChild(descriptionText);
+
     clearTimeout(hideFileNameTimeout);
-    в
-    if (currentDoc.showAsLink) return;
+    
+    // Handle showAsLink documents
+    if (currentDoc.showAsLink) {
+      const documentUrl = getCurrentDocument();
+      
+      if (!documentUrl) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.color = 'red';
+        errorDiv.style.fontSize = '12px';
+        errorDiv.textContent = 'Ошибка: URL документа не найден';
+        descriptionDisplay.appendChild(errorDiv);
+      } else {
+        const openLink = document.createElement('a');
+        openLink.className = 'open-link-btn';
+        openLink.href = documentUrl;
+        openLink.target = '_blank';
+        openLink.textContent = 'Перейти за посиланням';
+        openLink.style.fontSize = '130%';
+        openLink.style.textDecoration = 'underline';
+        descriptionDisplay.appendChild(openLink);
+      }
+      
+      // Don't set timeout for showAsLink documents - they stay visible
+      return;
+    }
+    
     hideFileNameTimeout = setTimeout(() => {
       descriptionDisplay.classList.add("fade-out");
       setTimeout(() => {
@@ -527,7 +557,7 @@ function setup() {
           loadDocument(currentIndex);
           updateUrlWithIndex(currentIndex);
           showNavButtons();
-          showFileName();
+          showDocumentDescription();
         }
       };
 
@@ -537,7 +567,7 @@ function setup() {
           loadDocument(currentIndex);
           updateUrlWithIndex(currentIndex);
           showNavButtons();
-          showFileName();
+          showDocumentDescription();
         }
       };
 
@@ -690,32 +720,6 @@ function setup() {
     hideLoader();
   }
 
-  function showAsLinkMode(documentUrl, description) {
-    cleanupCurrentViewer();
-    hideLoader();
-
-    const descriptionDisplay = document.getElementById("descriptionDisplay");
-    if (!descriptionDisplay) {
-      return;
-    }
-
-    descriptionDisplay.className = "description-display";
-
-    // Handle case where documentUrl might be empty
-    if (!documentUrl) {
-      descriptionDisplay.innerHTML = `
-        <div class="description-text">${description}</div>
-        <div style="color: red; font-size: 12px;">Ошибка: URL документа не найден</div>
-      `;
-    } else {
-      descriptionDisplay.innerHTML = `
-        <div class="description-text">${description}</div>
-        <button class="open-link-btn" onclick="window.open(${JSON.stringify(documentUrl)}, '_blank')">
-          Відкрити посилання
-        </button>
-      `;
-    }
-  }
 
   function getCacheKey(documentUrl, format) {
     return `${format}:${documentUrl}`;
@@ -1080,8 +1084,9 @@ function setup() {
 
     // Check if document should be shown as link only
     if (currentDoc && currentDoc.showAsLink) {
-      const description = currentDoc.description || `Документ №${currentIndex + 1}`;
-      showAsLinkMode(documentUrl, description);
+      cleanupCurrentViewer();
+      hideLoader();
+      showDocumentDescription();
       updateNavButtonVisibility();
       setupFullscreenButton();
       return;
@@ -1212,7 +1217,7 @@ function setup() {
 
       setupGalleryNavigation();
       loadDocument(currentIndex);
-      showFileName();
+      showDocumentDescription();
     }
   });
 
