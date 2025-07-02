@@ -42,7 +42,7 @@ function setup() {
   const galleryNavPrev = document.getElementById("galleryNavPrev");
   const galleryNavNext = document.getElementById("galleryNavNext");
   const unsupportedFormat = document.getElementById("unsupportedFormat");
-  const fileNameDisplay = document.getElementById("fileNameDisplay");
+  const descriptionDisplay = document.getElementById("descriptionDisplay");
   const fullscreenBtn = document.getElementById("fullscreenBtn");
 
   let galleryNavPrevHandler = null;
@@ -282,8 +282,8 @@ function setup() {
   }
 
   function hideFileName() {
-    const fileNameDisplay = document.getElementById("fileNameDisplay");
-    if (fileNameDisplay) fileNameDisplay.classList.add("hidden");
+    const descriptionDisplay = document.getElementById("descriptionDisplay");
+    if (descriptionDisplay) descriptionDisplay.classList.add("hidden");
   }
 
   function hideFullscreenButton() {
@@ -332,7 +332,7 @@ function setup() {
         hideLoader();
         setupGalleryNavigation();
         loadDocument(currentIndex);
-        showFileName();
+        showDocumentDescription();
         updateFullscreenButtonPosition();
 
         console.log("Documents updated via postMessage:", documents.length, "documents, index:", currentIndex);
@@ -385,7 +385,7 @@ function setup() {
 
         // Load the selected document
         loadDocument(currentIndex);
-        showFileName();
+        showDocumentDescription();
         updateNavButtonVisibility();
 
         console.log("Document selected successfully, new index:", currentIndex);
@@ -474,23 +474,60 @@ function setup() {
     }
   }
 
-  function showFileName() {
+  function showDocumentDescription() {
     const currentDoc = documents[currentIndex];
     if (!currentDoc) return;
+
 
     let description = currentDoc.description;
     if (!description || description.trim() === "" || description === "Document") {
       description = `Документ №${currentIndex + 1}`;
     }
 
-    fileNameDisplay.textContent = description;
-    fileNameDisplay.classList.remove("hidden", "fade-out");
+    descriptionDisplay.innerHTML = '';
+    descriptionDisplay.className = "description-display";
+    descriptionDisplay.classList.remove("hidden", "fade-out");
+
+    if (currentDoc.showAsLink) {
+      descriptionDisplay.classList.add("show-as-link");
+    } else {
+      descriptionDisplay.classList.remove("show-as-link");
+    }
+
+    const descriptionText = document.createElement('div');
+    descriptionText.className = 'description-text';
+    descriptionText.textContent = description;
+    descriptionDisplay.appendChild(descriptionText);
 
     clearTimeout(hideFileNameTimeout);
+
+    // Handle showAsLink documents
+    if (currentDoc.showAsLink) {
+      const documentUrl = getCurrentDocument();
+
+      if (!documentUrl) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.color = 'red';
+        errorDiv.style.fontSize = '12px';
+        errorDiv.textContent = 'Ошибка: URL документа не найден';
+        descriptionDisplay.appendChild(errorDiv);
+      } else {
+        const openLink = document.createElement('a');
+        openLink.className = 'open-link-btn';
+        openLink.href = documentUrl;
+        openLink.target = '_blank';
+        openLink.textContent = 'Перейти за посиланням';
+        descriptionDisplay.appendChild(openLink);
+      }
+
+      // Don't set timeout for showAsLink documents - they stay visible
+      return;
+    }
+
     hideFileNameTimeout = setTimeout(() => {
-      fileNameDisplay.classList.add("fade-out");
+      descriptionDisplay.classList.add("fade-out");
       setTimeout(() => {
-        fileNameDisplay.classList.add("hidden");
+        descriptionDisplay.classList.add("hidden");
       }, 300);
     }, 5000);
   }
@@ -525,7 +562,7 @@ function setup() {
           loadDocument(currentIndex);
           updateUrlWithIndex(currentIndex);
           showNavButtons();
-          showFileName();
+          showDocumentDescription();
         }
       };
 
@@ -535,7 +572,7 @@ function setup() {
           loadDocument(currentIndex);
           updateUrlWithIndex(currentIndex);
           showNavButtons();
-          showFileName();
+          showDocumentDescription();
         }
       };
 
@@ -687,6 +724,7 @@ function setup() {
     unsupportedFormat.classList.remove("hidden");
     hideLoader();
   }
+
 
   function getCacheKey(documentUrl, format) {
     return `${format}:${documentUrl}`;
@@ -1047,6 +1085,17 @@ function setup() {
 
     currentIndex = index;
     const documentUrl = getCurrentDocument();
+    const currentDoc = documents[currentIndex];
+
+    // Check if document should be shown as link only
+    if (currentDoc && currentDoc.showAsLink) {
+      cleanupCurrentViewer();
+      hideLoader();
+      showDocumentDescription();
+      updateNavButtonVisibility();
+      setupFullscreenButton();
+      return;
+    }
 
     const format = getCurrentFormat();
 
@@ -1173,11 +1222,13 @@ function setup() {
 
       setupGalleryNavigation();
       loadDocument(currentIndex);
-      showFileName();
+      showDocumentDescription();
     }
   });
 
 }
+
+global.setup = setup;
 
 const javaScript = `(${setup.toString()})();`;
 
