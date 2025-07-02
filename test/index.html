@@ -112,6 +112,42 @@
             border-radius: 3px;
             border-left: 3px solid #007bff;
         }
+
+        .build-error {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8d7da;
+            color: #721c24;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .error-content {
+            max-width: 500px;
+        }
+
+        .error-content h3 {
+            margin-top: 0;
+            color: #721c24;
+        }
+
+        .error-details {
+            background: #fff;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -138,6 +174,14 @@
 
         <div class="widget-container">
             <iframe id="widgetFrame" class="widget-iframe" src="../dist/widget.html"></iframe>
+            <div id="buildError" class="build-error" style="display: none;">
+                <div class="error-content">
+                    <h3>🚨 Ошибка сборки виджета</h3>
+                    <p>Виджет не может быть загружен из-за ошибок в процессе сборки:</p>
+                    <div id="errorDetails" class="error-details"></div>
+                    <button class="btn" onclick="retryBuild()">🔄 Попробовать снова</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -278,12 +322,6 @@
             showStatus('Все документы удалены', 'error');
         }
 
-        // Auto-reload widget iframe when widget.html changes
-        function reloadWidget() {
-            const iframe = document.getElementById('widgetFrame');
-            iframe.src = iframe.src + '?t=' + Date.now();
-            showStatus('Виджет перезагружен');
-        }
 
         // Listen for messages from parent (for auto-reload)
         window.addEventListener('message', function(event) {
@@ -292,9 +330,75 @@
             }
         });
 
+        // Check build status and show errors if needed
+        function checkBuildStatus() {
+            fetch('../dist/widget.html')
+                .then(response => response.text())
+                .then(html => {
+                    // Check if JavaScript is properly included
+                    if (html.includes('<script>\n\t\tundefined\n    </script>') || 
+                        html.includes('<script>undefined</script>')) {
+                        showBuildError('JavaScript компонент не был включен в сборку. Возможны синтаксические ошибки в коде.');
+                        return;
+                    }
+                    
+                    // Check for other build issues
+                    if (html.length < 1000) {
+                        showBuildError('Файл виджета слишком мал. Возможно, сборка не завершена.');
+                        return;
+                    }
+                    
+                    // Build seems OK, show widget
+                    showWidget();
+                })
+                .catch(error => {
+                    showBuildError(`Не удалось загрузить виджет: ${error.message}`);
+                });
+        }
+
+        function showBuildError(errorMessage) {
+            const iframe = document.getElementById('widgetFrame');
+            const errorDiv = document.getElementById('buildError');
+            const errorDetails = document.getElementById('errorDetails');
+            
+            iframe.style.display = 'none';
+            errorDiv.style.display = 'flex';
+            errorDetails.textContent = errorMessage;
+            
+            showStatus('Обнаружена ошибка сборки виджета', 'error');
+        }
+
+        function showWidget() {
+            const iframe = document.getElementById('widgetFrame');
+            const errorDiv = document.getElementById('buildError');
+            
+            iframe.style.display = 'block';
+            errorDiv.style.display = 'none';
+        }
+
+        function retryBuild() {
+            showStatus('Перезагрузка виджета...', 'success');
+            const iframe = document.getElementById('widgetFrame');
+            iframe.src = iframe.src + '?t=' + Date.now();
+            
+            // Check build status after a short delay
+            setTimeout(checkBuildStatus, 1000);
+        }
+
+        // Auto-reload widget iframe when widget.html changes
+        function reloadWidget() {
+            const iframe = document.getElementById('widgetFrame');
+            iframe.src = iframe.src + '?t=' + Date.now();
+            showStatus('Виджет перезагружен');
+            
+            // Check build status after reload
+            setTimeout(checkBuildStatus, 1000);
+        }
+
         // Initial load
         window.addEventListener('load', function() {
-            showStatus('Тестовая страница загружена. Выберите действие для тестирования виджета.');
+            showStatus('Тестовая страница загружена. Проверка статуса сборки виджета...');
+            checkBuildStatus();
         });
     </script>
 </body>
