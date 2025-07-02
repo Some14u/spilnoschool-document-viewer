@@ -1,40 +1,30 @@
 const fs = require('fs');
 const path = require('path');
+const { render } = require('./utils/template');
 
 function generateErrorPage(componentName, error, distDir) {
-  const errorHtml = `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Build Error - ${componentName}</title>
-    <style>
-      body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-      .error-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-      .error-title { color: #d32f2f; font-size: 24px; margin-bottom: 20px; }
-      .error-component { color: #666; font-size: 18px; margin-bottom: 15px; }
-      .error-message { background: #ffebee; padding: 15px; border-left: 4px solid #d32f2f; margin: 20px 0; }
-      .error-stack { background: #f5f5f5; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; white-space: pre-wrap; overflow-x: auto; }
-      .retry-info { margin-top: 30px; padding: 15px; background: #e3f2fd; border-radius: 4px; }
-    </style>
-  </head>
-  <body>
-    <div class="error-container">
-      <h1 class="error-title">🔨 Build Error</h1>
-      <div class="error-component">Component: <strong>${componentName}</strong></div>
-      <div class="error-message">
-        <strong>Error:</strong> ${error.message}
-      </div>
-      <div class="error-stack">${error.stack}</div>
-      <div class="retry-info">
-        <strong>💡 Tip:</strong> Fix the error in the ${componentName} component and the build will automatically retry.
-      </div>
-    </div>
-  </body>
-</html>`;
-  
-  const widgetOutputPath = path.join(distDir, 'widget.html');
-  fs.writeFileSync(widgetOutputPath, errorHtml, 'utf8');
-  console.error(`❌ ${componentName} build failed, error page generated`);
+  try {
+    const errorHtml = render('error-template.html', {
+      componentName: componentName,
+      errorMessage: error.message,
+      errorStack: error.stack
+    });
+    
+    const widgetOutputPath = path.join(distDir, 'widget.html');
+    fs.writeFileSync(widgetOutputPath, errorHtml, 'utf8');
+    console.error(`❌ ${componentName} build failed, error page generated`);
+  } catch (templateError) {
+    const fallbackHtml = `<!DOCTYPE html>
+<html><head><title>Build Error</title></head>
+<body><h1>Build Error in ${componentName}</h1>
+<p>Error: ${error.message}</p>
+<pre>${error.stack}</pre>
+<p>Template loading failed: ${templateError.message}</p></body></html>`;
+    
+    const widgetOutputPath = path.join(distDir, 'widget.html');
+    fs.writeFileSync(widgetOutputPath, fallbackHtml, 'utf8');
+    console.error(`❌ ${componentName} build failed, fallback error page generated`);
+  }
 }
 
 function buildWidget() {
