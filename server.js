@@ -8,6 +8,7 @@ const PORT = 3000;
 
 app.use('/dist', express.static(path.join(__dirname, 'dist')));
 app.use('/test', express.static(path.join(__dirname, 'test')));
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'test')));
 
 app.post('/api/rebuild', (req, res) => {
@@ -39,7 +40,8 @@ function setupFileWatcher() {
   
   const watcher = chokidar.watch([
     'src/components/**/*.js',
-    'src/builder.js'
+    'src/builder.js',
+    'test/**/*.html'
   ], {
     ignored: /node_modules/,
     persistent: true,
@@ -54,6 +56,9 @@ function setupFileWatcher() {
     delete require.cache[fullPath];
     
     delete require.cache[require.resolve('./src/builder')];
+    delete require.cache[require.resolve('./src/components/css.js')];
+    delete require.cache[require.resolve('./src/components/javascript.js')];
+    delete require.cache[require.resolve('./src/components/html.js')];
     
     const { buildWidget } = require('./src/builder');
     const success = buildWidget();
