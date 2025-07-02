@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .widget-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 600px;
+        }
+        
+        .widget-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .document-list {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .document-item {
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 3px;
+            border-left: 3px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Widget Test Environment</h1>
+            <p>Тестовая страница для виджета просмотра документов</p>
+        </div>
+        
+        <div class="controls">
+            <h3>Управление документами</h3>
+            <button class="btn" onclick="addSampleDocuments()">📄 Добавить тестовые документы</button>
+            <button class="btn btn-success" onclick="addImageDocuments()">🖼️ Добавить изображения</button>
+            <button class="btn btn-success" onclick="addVideoDocuments()">🎥 Добавить видео</button>
+            <button class="btn btn-danger" onclick="clearDocuments()">🗑️ Очистить все</button>
+            
+            <div id="status" class="status"></div>
+            
+            <div id="documentList" class="document-list" style="display: none;">
+                <strong>Текущие документы:</strong>
+                <div id="documents"></div>
+            </div>
+        </div>
+        
+        <div class="widget-container">
+            <iframe id="widgetFrame" class="widget-iframe" src="../dist/widget.html"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentDocuments = [];
+        
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+        
+        function updateDocumentList() {
+            const listContainer = document.getElementById('documentList');
+            const documentsContainer = document.getElementById('documents');
+            
+            if (currentDocuments.length === 0) {
+                listContainer.style.display = 'none';
+                return;
+            }
+            
+            listContainer.style.display = 'block';
+            documentsContainer.innerHTML = currentDocuments.map((doc, index) => 
+                `<div class="document-item">
+                    <strong>${index + 1}.</strong> ${doc.description || doc.name || 'Документ'} 
+                    <br><small>${doc.format || 'auto'} - ${doc.url.substring(0, 60)}${doc.url.length > 60 ? '...' : ''}</small>
+                </div>`
+            ).join('');
+        }
+        
+        function sendToWidget(type, payload) {
+            const iframe = document.getElementById('widgetFrame');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: type,
+                    payload: payload
+                }, '*');
+            }
+        }
+        
+        function addSampleDocuments() {
+            currentDocuments = [
+                {
+                    url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                    description: "Тестовый PDF документ",
+                    format: "application/pdf"
+                },
+                {
+                    url: "https://file-examples.com/storage/fe68c1b7d4c2b9c2b0e7b5e/2017/10/file_example_JPG_100kB.jpg",
+                    description: "Тестовое изображение JPG",
+                    format: "image/jpeg"
+                },
+                {
+                    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    description: "YouTube видео",
+                    format: "video/youtube"
+                }
+            ];
+            
+            sendToWidget('updateDocuments', {
+                documents: currentDocuments,
+                index: 0
+            });
+            
+            updateDocumentList();
+            showStatus(`Добавлено ${currentDocuments.length} тестовых документов`);
+        }
+        
+        function addImageDocuments() {
+            currentDocuments = [
+                {
+                    url: "https://picsum.photos/800/600?random=1",
+                    description: "Случайное изображение 1",
+                    format: "image/jpeg"
+                },
+                {
+                    url: "https://picsum.photos/800/600?random=2",
+                    description: "Случайное изображение 2", 
+                    format: "image/jpeg"
+                },
+                {
+                    url: "https://picsum.photos/800/600?random=3",
+                    description: "Случайное изображение 3",
+                    format: "image/jpeg"
+                }
+            ];
+            
+            sendToWidget('updateDocuments', {
+                documents: currentDocuments,
+                index: 0
+            });
+            
+            updateDocumentList();
+            showStatus(`Добавлено ${currentDocuments.length} изображений`);
+        }
+        
+        function addVideoDocuments() {
+            currentDocuments = [
+                {
+                    url: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+                    description: "YouTube: Me at the zoo",
+                    format: "video/youtube"
+                },
+                {
+                    url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+                    description: "YouTube: Gangnam Style",
+                    format: "video/youtube"
+                }
+            ];
+            
+            sendToWidget('updateDocuments', {
+                documents: currentDocuments,
+                index: 0
+            });
+            
+            updateDocumentList();
+            showStatus(`Добавлено ${currentDocuments.length} видео`);
+        }
+        
+        function clearDocuments() {
+            currentDocuments = [];
+            
+            sendToWidget('updateDocuments', {
+                documents: [],
+                index: 0
+            });
+            
+            updateDocumentList();
+            showStatus('Все документы удалены', 'error');
+        }
+        
+        // Auto-reload widget iframe when widget.html changes
+        function reloadWidget() {
+            const iframe = document.getElementById('widgetFrame');
+            iframe.src = iframe.src + '?t=' + Date.now();
+            showStatus('Виджет перезагружен');
+        }
+        
+        // Listen for messages from parent (for auto-reload)
+        window.addEventListener('message', function(event) {
+            if (event.data === 'reload-widget') {
+                reloadWidget();
+            }
+        });
+        
+        // Initial load
+        window.addEventListener('load', function() {
+            showStatus('Тестовая страница загружена. Выберите действие для тестирования виджета.');
+        });
+    </script>
+</body>
+</html>

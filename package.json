@@ -1,0 +1,19 @@
+{
+  "name": "widget-builder",
+  "version": "1.0.0",
+  "description": "Automatic build and test system for document viewer widget",
+  "main": "server.js",
+  "scripts": {
+    "build": "node src/builder.js",
+    "dev": "node server.js",
+    "start": "npm run build && npm run dev"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {},
+  "keywords": ["widget", "document-viewer", "build-system"],
+  "author": "",
+  "license": "MIT"
+}
