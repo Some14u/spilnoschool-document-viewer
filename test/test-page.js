@@ -51,13 +51,13 @@ function addSampleDocuments() {
         {
             url: basePath + "sample.svg",
             description: "Локальный SVG файл",
-            format: "image/svg+xml",
-            showAsLink: true
+            format: "image/svg+xml"
         },
         {
             url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            description: "YouTube видео",
-            format: "video/youtube"
+            // description: "YouTube видео",
+            format: "video/youtube",
+            showAsLink: true
         }
     ];
 
@@ -146,7 +146,7 @@ function checkBuildStatus() {
 function showWidget() {
     const iframe = document.getElementById('widgetFrame');
     const errorDiv = document.getElementById('buildError');
-    
+
     iframe.style.display = 'block';
     errorDiv.style.display = 'none';
 }
@@ -155,7 +155,7 @@ function retryBuild() {
     showStatus('Перезагрузка виджета...', 'success');
     const iframe = document.getElementById('widgetFrame');
     iframe.src = iframe.src + '?t=' + Date.now();
-    
+
     setTimeout(checkBuildStatus, 1000);
 }
 
@@ -163,7 +163,7 @@ function reloadWidget() {
     const iframe = document.getElementById('widgetFrame');
     iframe.src = iframe.src + '?t=' + Date.now();
     showStatus('Виджет перезагружен');
-    
+
     setTimeout(checkBuildStatus, 1000);
 }
 

@@ -477,7 +477,7 @@ function setup() {
   function showDocumentDescription() {
     const currentDoc = documents[currentIndex];
     if (!currentDoc) return;
-    
+
 
     let description = currentDoc.description;
     if (!description || description.trim() === "" || description === "Document") {
@@ -487,12 +487,11 @@ function setup() {
     descriptionDisplay.innerHTML = '';
     descriptionDisplay.className = "description-display";
     descriptionDisplay.classList.remove("hidden", "fade-out");
-    
-    // Add vertical centering for showAsLink documents
+
     if (currentDoc.showAsLink) {
-      descriptionDisplay.classList.add("vertically-centered");
+      descriptionDisplay.classList.add("show-as-link");
     } else {
-      descriptionDisplay.classList.remove("vertically-centered");
+      descriptionDisplay.classList.remove("show-as-link");
     }
 
     const descriptionText = document.createElement('div');
@@ -501,11 +500,11 @@ function setup() {
     descriptionDisplay.appendChild(descriptionText);
 
     clearTimeout(hideFileNameTimeout);
-    
+
     // Handle showAsLink documents
     if (currentDoc.showAsLink) {
       const documentUrl = getCurrentDocument();
-      
+
       if (!documentUrl) {
         const errorDiv = document.createElement('div');
         errorDiv.style.color = 'red';
@@ -518,15 +517,13 @@ function setup() {
         openLink.href = documentUrl;
         openLink.target = '_blank';
         openLink.textContent = 'Перейти за посиланням';
-        openLink.style.fontSize = '130%';
-        openLink.style.textDecoration = 'underline';
         descriptionDisplay.appendChild(openLink);
       }
-      
+
       // Don't set timeout for showAsLink documents - they stay visible
       return;
     }
-    
+
     hideFileNameTimeout = setTimeout(() => {
       descriptionDisplay.classList.add("fade-out");
       setTimeout(() => {
