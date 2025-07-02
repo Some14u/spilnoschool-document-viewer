@@ -486,9 +486,9 @@ function setup() {
     descriptionDisplay.textContent = description;
     descriptionDisplay.classList.remove("hidden", "fade-out");
 
-    if (currentDoc.showAsLink) return;
-
     clearTimeout(hideFileNameTimeout);
+    в
+    if (currentDoc.showAsLink) return;
     hideFileNameTimeout = setTimeout(() => {
       descriptionDisplay.classList.add("fade-out");
       setTimeout(() => {
@@ -693,14 +693,14 @@ function setup() {
   function showAsLinkMode(documentUrl, description) {
     cleanupCurrentViewer();
     hideLoader();
-    
+
     const descriptionDisplay = document.getElementById("descriptionDisplay");
     if (!descriptionDisplay) {
       return;
     }
-    
+
     descriptionDisplay.className = "description-display";
-    
+
     // Handle case where documentUrl might be empty
     if (!documentUrl) {
       descriptionDisplay.innerHTML = `
