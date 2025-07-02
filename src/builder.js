@@ -25,12 +25,23 @@ function buildWidget() {
     console.log('🏗️  Processing HTML component...');
     require(path.join(componentsDir, 'html.js'));
     
-    const outputPath = path.join(distDir, 'widget.html');
-    fs.writeFileSync(outputPath, global.data.html, 'utf8');
+    const widgetOutputPath = path.join(distDir, 'widget.html');
+    fs.writeFileSync(widgetOutputPath, global.data.html, 'utf8');
+    
+    const testPagePath = path.join(__dirname, '..', 'test', 'index.html');
+    const indexOutputPath = path.join(distDir, 'index.html');
+    
+    if (fs.existsSync(testPagePath)) {
+      let testPageContent = fs.readFileSync(testPagePath, 'utf8');
+      testPageContent = testPageContent.replace('src="../dist/widget.html"', 'src="./widget.html"');
+      fs.writeFileSync(indexOutputPath, testPageContent, 'utf8');
+      console.log('📋 Test page copied to dist/index.html');
+    }
     
     console.log('✅ Widget built successfully!');
-    console.log(`📄 Output: ${outputPath}`);
-    console.log(`📊 Size: ${(fs.statSync(outputPath).size / 1024).toFixed(2)} KB`);
+    console.log(`📄 Widget: ${widgetOutputPath}`);
+    console.log(`📋 Test page: ${indexOutputPath}`);
+    console.log(`📊 Widget size: ${(fs.statSync(widgetOutputPath).size / 1024).toFixed(2)} KB`);
     
     return true;
   } catch (error) {

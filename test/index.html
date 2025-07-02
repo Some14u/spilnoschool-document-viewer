@@ -184,14 +184,16 @@
         }
         
         function addSampleDocuments() {
+            // Use relative paths that work both from root and dist
+            const basePath = window.location.pathname.includes('/dist/') ? '../assets/' : '/assets/';
             currentDocuments = [
                 {
-                    url: "/assets/sample.pdf",
+                    url: basePath + "sample.pdf",
                     description: "Локальный PDF документ",
                     format: "application/pdf"
                 },
                 {
-                    url: "/assets/sample.svg",
+                    url: basePath + "sample.svg",
                     description: "Локальный SVG файл",
                     format: "image/svg+xml"
                 },
