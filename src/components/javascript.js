@@ -487,6 +487,13 @@ function setup() {
     descriptionDisplay.innerHTML = '';
     descriptionDisplay.className = "description-display";
     descriptionDisplay.classList.remove("hidden", "fade-out");
+    
+    // Add vertical centering for showAsLink documents
+    if (currentDoc.showAsLink) {
+      descriptionDisplay.classList.add("vertically-centered");
+    } else {
+      descriptionDisplay.classList.remove("vertically-centered");
+    }
 
     const descriptionText = document.createElement('div');
     descriptionText.className = 'description-text';

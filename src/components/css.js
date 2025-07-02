@@ -254,10 +254,17 @@ data.css = `
         pointer-events: auto;
         display: block;
         margin-top: 8px;
+        transition: color 0.2s ease;
       }
 
       .description-display .open-link-btn:hover {
         color: #ccc;
+      }
+
+      .description-display.vertically-centered {
+        top: 50%;
+        bottom: auto;
+        transform: translate(-50%, -50%);
       }
 
       .gallery-nav:hover {
