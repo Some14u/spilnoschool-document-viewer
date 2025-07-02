@@ -1216,6 +1216,8 @@ function setup() {
 
 }
 
+global.setup = setup;
+
 const javaScript = `(${setup.toString()})();`;
 
 data.javaScript = javaScript;
