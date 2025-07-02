@@ -33,9 +33,12 @@ function buildWidget() {
     
     if (fs.existsSync(testPagePath)) {
       let testPageContent = fs.readFileSync(testPagePath, 'utf8');
+      console.log(`📋 Test page size: ${testPageContent.length} characters`);
       testPageContent = testPageContent.replace('src="../dist/widget.html"', 'src="./widget.html"');
       fs.writeFileSync(indexOutputPath, testPageContent, 'utf8');
       console.log('📋 Test page copied to dist/index.html');
+    } else {
+      console.log('❌ Test page not found at:', testPagePath);
     }
     
     console.log('✅ Widget built successfully!');
