@@ -486,6 +486,8 @@ function setup() {
     descriptionDisplay.textContent = description;
     descriptionDisplay.classList.remove("hidden", "fade-out");
 
+    if (currentDoc.showAsLink) return;
+
     clearTimeout(hideFileNameTimeout);
     hideFileNameTimeout = setTimeout(() => {
       descriptionDisplay.classList.add("fade-out");
