@@ -477,6 +477,7 @@ function setup() {
   function showDocumentDescription() {
     const currentDoc = documents[currentIndex];
     if (!currentDoc) return;
+    
 
     let description = currentDoc.description;
     if (!description || description.trim() === "" || description === "Document") {

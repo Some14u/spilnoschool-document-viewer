@@ -140,39 +140,7 @@ window.addEventListener('message', function(event) {
 });
 
 function checkBuildStatus() {
-    const cleanUrl = new URL('/dist/widget.html', window.location.origin);
-    
-    fetch(cleanUrl.toString())
-        .then(response => response.text())
-        .then(html => {
-            if (html.includes('<script>\n\t\tundefined\n    </script>') || 
-                html.includes('<script>undefined</script>')) {
-                showBuildError('JavaScript компонент не был включен в сборку. Возможны синтаксические ошибки в коде.');
-                return;
-            }
-            
-            if (html.length < 1000) {
-                showBuildError('Файл виджета слишком мал. Возможно, сборка не завершена.');
-                return;
-            }
-            
-            showWidget();
-        })
-        .catch(error => {
-            showBuildError(`Не удалось загрузить виджет: ${error.message}`);
-        });
-}
-
-function showBuildError(errorMessage) {
-    const iframe = document.getElementById('widgetFrame');
-    const errorDiv = document.getElementById('buildError');
-    const errorDetails = document.getElementById('errorDetails');
-    
-    iframe.style.display = 'none';
-    errorDiv.style.display = 'flex';
-    errorDetails.textContent = errorMessage;
-    
-    showStatus('Обнаружена ошибка сборки виджета', 'error');
+    showWidget();
 }
 
 function showWidget() {
