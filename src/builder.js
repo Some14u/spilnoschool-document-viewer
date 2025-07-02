@@ -11,7 +11,10 @@ function generateErrorPage(componentName, error, distDir) {
     });
     
     const widgetOutputPath = path.join(distDir, 'widget.html');
+    const indexOutputPath = path.join(distDir, 'index.html');
+    
     fs.writeFileSync(widgetOutputPath, errorHtml, 'utf8');
+    fs.writeFileSync(indexOutputPath, errorHtml, 'utf8');
     console.error(`❌ ${componentName} build failed, error page generated`);
   } catch (templateError) {
     const fallbackHtml = `<!DOCTYPE html>
@@ -22,7 +25,10 @@ function generateErrorPage(componentName, error, distDir) {
 <p>Template loading failed: ${templateError.message}</p></body></html>`;
     
     const widgetOutputPath = path.join(distDir, 'widget.html');
+    const indexOutputPath = path.join(distDir, 'index.html');
+    
     fs.writeFileSync(widgetOutputPath, fallbackHtml, 'utf8');
+    fs.writeFileSync(indexOutputPath, fallbackHtml, 'utf8');
     console.error(`❌ ${componentName} build failed, fallback error page generated`);
   }
 }
