@@ -246,20 +246,18 @@ data.css = `
       }
 
       .description-display .open-link-btn {
-        background: rgba(255, 255, 255, 0.9);
-        color: #333;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 14px;
+        color: white;
+        text-decoration: underline;
+        font-size: 130%;
         font-weight: 500;
         cursor: pointer;
-        transition: background-color 0.2s ease;
         pointer-events: auto;
+        display: block;
+        margin-top: 8px;
       }
 
       .description-display .open-link-btn:hover {
-        background: rgba(255, 255, 255, 1);
+        color: #ccc;
       }
 
       .gallery-nav:hover {
