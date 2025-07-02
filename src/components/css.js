@@ -215,7 +215,7 @@ data.css = `
         z-index: 1001;
       }
 
-      .file-name-display {
+      .description-display {
         position: absolute;
         bottom: 50px;
         left: 50%;
@@ -237,8 +237,29 @@ data.css = `
         text-overflow: ellipsis;
       }
 
-      .file-name-display.fade-out {
+      .description-display.fade-out {
         opacity: 0;
+      }
+
+      .description-display .description-text {
+        margin-bottom: 10px;
+      }
+
+      .description-display .open-link-btn {
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        pointer-events: auto;
+      }
+
+      .description-display .open-link-btn:hover {
+        background: rgba(255, 255, 255, 1);
       }
 
       .gallery-nav:hover {

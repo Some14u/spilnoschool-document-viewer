@@ -36,7 +36,7 @@ data.html = `<!DOCTYPE html>
       </svg>
     </button>
 
-    <div id="fileNameDisplay" class="file-name-display hidden"></div>
+    <div id="descriptionDisplay" class="description-display hidden"></div>
 
     <button id="fullscreenBtn" class="fullscreen-btn hidden">
       <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">

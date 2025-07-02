@@ -42,7 +42,7 @@ function setup() {
   const galleryNavPrev = document.getElementById("galleryNavPrev");
   const galleryNavNext = document.getElementById("galleryNavNext");
   const unsupportedFormat = document.getElementById("unsupportedFormat");
-  const fileNameDisplay = document.getElementById("fileNameDisplay");
+  const descriptionDisplay = document.getElementById("descriptionDisplay");
   const fullscreenBtn = document.getElementById("fullscreenBtn");
 
   let galleryNavPrevHandler = null;
@@ -282,8 +282,8 @@ function setup() {
   }
 
   function hideFileName() {
-    const fileNameDisplay = document.getElementById("fileNameDisplay");
-    if (fileNameDisplay) fileNameDisplay.classList.add("hidden");
+    const descriptionDisplay = document.getElementById("descriptionDisplay");
+    if (descriptionDisplay) descriptionDisplay.classList.add("hidden");
   }
 
   function hideFullscreenButton() {
@@ -483,14 +483,14 @@ function setup() {
       description = `Документ №${currentIndex + 1}`;
     }
 
-    fileNameDisplay.textContent = description;
-    fileNameDisplay.classList.remove("hidden", "fade-out");
+    descriptionDisplay.textContent = description;
+    descriptionDisplay.classList.remove("hidden", "fade-out");
 
     clearTimeout(hideFileNameTimeout);
     hideFileNameTimeout = setTimeout(() => {
-      fileNameDisplay.classList.add("fade-out");
+      descriptionDisplay.classList.add("fade-out");
       setTimeout(() => {
-        fileNameDisplay.classList.add("hidden");
+        descriptionDisplay.classList.add("hidden");
       }, 300);
     }, 5000);
   }
@@ -686,6 +686,32 @@ function setup() {
   function showUnsupportedFormat() {
     unsupportedFormat.classList.remove("hidden");
     hideLoader();
+  }
+
+  function showAsLinkMode(documentUrl, description) {
+    cleanupCurrentViewer();
+    hideLoader();
+    
+    const descriptionDisplay = document.getElementById("descriptionDisplay");
+    if (!descriptionDisplay) {
+      return;
+    }
+    
+    // Handle case where documentUrl might be empty
+    if (!documentUrl) {
+      descriptionDisplay.innerHTML = `
+        <div class="description-text">${description}</div>
+        <div style="color: red; font-size: 12px;">Ошибка: URL документа не найден</div>
+      `;
+    } else {
+      descriptionDisplay.innerHTML = `
+        <div class="description-text">${description}</div>
+        <button class="open-link-btn" onclick="window.open(${JSON.stringify(documentUrl)}, '_blank')">
+          Відкрити посилання
+        </button>
+      `;
+    }
+    descriptionDisplay.classList.remove("hidden", "fade-out");
   }
 
   function getCacheKey(documentUrl, format) {
@@ -1047,6 +1073,16 @@ function setup() {
 
     currentIndex = index;
     const documentUrl = getCurrentDocument();
+    const currentDoc = documents[currentIndex];
+
+    // Check if document should be shown as link only
+    if (currentDoc && currentDoc.showAsLink) {
+      const description = currentDoc.description || `Документ №${currentIndex + 1}`;
+      showAsLinkMode(documentUrl, description);
+      updateNavButtonVisibility();
+      setupFullscreenButton();
+      return;
+    }
 
     const format = getCurrentFormat();
 
