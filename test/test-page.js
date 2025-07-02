@@ -140,25 +140,7 @@ window.addEventListener('message', function(event) {
 });
 
 function checkBuildStatus() {
-    fetch('../dist/widget.html')
-        .then(response => response.text())
-        .then(html => {
-            if (html.includes('<script>\n\t\tundefined\n    </script>') || 
-                html.includes('<script>undefined</script>')) {
-                showBuildError('JavaScript компонент не был включен в сборку. Возможны синтаксические ошибки в коде.');
-                return;
-            }
-            
-            if (html.length < 1000) {
-                showBuildError('Файл виджета слишком мал. Возможно, сборка не завершена.');
-                return;
-            }
-            
-            showWidget();
-        })
-        .catch(error => {
-            showBuildError(`Не удалось загрузить виджет: ${error.message}`);
-        });
+    showWidget();
 }
 
 function showBuildError(errorMessage) {

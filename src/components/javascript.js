@@ -697,6 +697,8 @@ function setup() {
       return;
     }
     
+    descriptionDisplay.className = "description-display";
+    
     // Handle case where documentUrl might be empty
     if (!documentUrl) {
       descriptionDisplay.innerHTML = `
@@ -711,7 +713,6 @@ function setup() {
         </button>
       `;
     }
-    descriptionDisplay.classList.remove("hidden", "fade-out");
   }
 
   function getCacheKey(documentUrl, format) {
