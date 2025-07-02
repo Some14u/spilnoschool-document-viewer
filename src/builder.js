@@ -9,10 +9,10 @@ function generateErrorPage(componentName, error, distDir) {
       errorMessage: error.message,
       errorStack: error.stack
     });
-    
+
     const widgetOutputPath = path.join(distDir, 'widget.html');
     const indexOutputPath = path.join(distDir, 'index.html');
-    
+
     fs.writeFileSync(widgetOutputPath, errorHtml, 'utf8');
     fs.writeFileSync(indexOutputPath, errorHtml, 'utf8');
     console.error(`❌ ${componentName} build failed, error page generated`);
@@ -23,10 +23,10 @@ function generateErrorPage(componentName, error, distDir) {
 <p>Error: ${error.message}</p>
 <pre>${error.stack}</pre>
 <p>Template loading failed: ${templateError.message}</p></body></html>`;
-    
+
     const widgetOutputPath = path.join(distDir, 'widget.html');
     const indexOutputPath = path.join(distDir, 'index.html');
-    
+
     fs.writeFileSync(widgetOutputPath, fallbackHtml, 'utf8');
     fs.writeFileSync(indexOutputPath, fallbackHtml, 'utf8');
     console.error(`❌ ${componentName} build failed, fallback error page generated`);
@@ -48,7 +48,7 @@ function buildWidget() {
   }
 
   let buildSuccess = true;
-  
+
   try {
     console.log('📝 Processing CSS component...');
     delete require.cache[path.join(componentsDir, 'css.js')];
