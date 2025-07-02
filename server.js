@@ -8,6 +8,7 @@ const PORT = 3000;
 
 app.use('/dist', express.static(path.join(__dirname, 'dist')));
 app.use('/test', express.static(path.join(__dirname, 'test')));
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'test')));
 
 app.post('/api/rebuild', (req, res) => {
