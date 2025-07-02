@@ -1,7 +1,7 @@
 {
-  "name": "widget-builder",
+  "name": "spilnoschool-document-viewer",
   "version": "1.0.0",
-  "description": "Automatic build and test system for document viewer widget",
+  "description": "SpilnoSchool Document Viewer - Widget for viewing documents, images, and videos in iframe",
   "main": "server.js",
   "scripts": {
     "build": "node src/builder.js",
