@@ -230,41 +230,41 @@ data.css = `
         transition: opacity 0.3s ease;
         opacity: 1;
         pointer-events: none;
-        max-width: 400px;
+        max-width: 600px;
         text-align: center;
-		white-space: pre-line;
-		overflow: hidden;
+		    white-space: pre-line;
+		    overflow: hidden;
         text-overflow: ellipsis;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
 
       .description-display.fade-out {
         opacity: 0;
       }
-
-      .description-display .description-text {
-        margin-bottom: 10px;
-      }
-
       .description-display .open-link-btn {
-        color: white;
+        color: #ccc;
         text-decoration: underline;
-        font-size: 130%;
+        font-size: 120%;
         font-weight: 500;
         cursor: pointer;
         pointer-events: auto;
         display: block;
-        margin-top: 8px;
         transition: color 0.2s ease;
       }
 
       .description-display .open-link-btn:hover {
-        color: #ccc;
+        color: white;
       }
 
-      .description-display.vertically-centered {
+      .description-display.show-as-link {
         top: 50%;
         bottom: auto;
         transform: translate(-50%, -50%);
+        padding: 24px 40px;
+        border-radius: 0;
       }
 
       .gallery-nav:hover {
