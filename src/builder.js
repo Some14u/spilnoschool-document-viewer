@@ -32,11 +32,35 @@ function buildWidget() {
     const indexOutputPath = path.join(distDir, 'index.html');
     
     if (fs.existsSync(testPagePath)) {
-      let testPageContent = fs.readFileSync(testPagePath, 'utf8');
+      let testPageContent = '';
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      while (attempts < maxAttempts) {
+        try {
+          testPageContent = fs.readFileSync(testPagePath, 'utf8');
+          if (testPageContent.length > 0) {
+            break;
+          }
+          if (attempts < maxAttempts - 1) {
+            const start = Date.now();
+            while (Date.now() - start < 100) {
+            }
+          }
+        } catch (error) {
+          console.log(`⚠️ Attempt ${attempts + 1} failed to read test page:`, error.message);
+        }
+        attempts++;
+      }
+      
       console.log(`📋 Test page size: ${testPageContent.length} characters`);
-      testPageContent = testPageContent.replace('src="../dist/widget.html"', 'src="./widget.html"');
-      fs.writeFileSync(indexOutputPath, testPageContent, 'utf8');
-      console.log('📋 Test page copied to dist/index.html');
+      if (testPageContent.length > 0) {
+        testPageContent = testPageContent.replace('src="../dist/widget.html"', 'src="./widget.html"');
+        fs.writeFileSync(indexOutputPath, testPageContent, 'utf8');
+        console.log('📋 Test page copied to dist/index.html');
+      } else {
+        console.log('❌ Test page content is empty after all attempts');
+      }
     } else {
       console.log('❌ Test page not found at:', testPagePath);
     }
