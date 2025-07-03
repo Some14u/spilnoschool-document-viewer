@@ -45,8 +45,7 @@ function addSampleDocuments() {
         {
             url: basePath + "sample.pdf",
             description: "Локальный PDF документ",
-            format: "application/pdf",
-            showAsLink: true
+            format: "application/pdf"
         },
         {
             url: basePath + "sample.svg",
@@ -56,8 +55,88 @@ function addSampleDocuments() {
         {
             url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             // description: "YouTube видео",
-            format: "video/youtube",
+            format: "video/youtube"
+        },
+        {
+            url: "https://google.com",
+            description: "Google главная страница",
+            format: "text/html",
             showAsLink: true
+        },
+        {
+            url: "https://docs.google.com/document/d/e/2PACX-1vTLDLUxQae6nKmdHCbR4PWNvLb8mnJOQZ_gnuco-CPzLpFtARoF9901J9rWh4N4-w2biUedgCbhZsbX/pub",
+            description: "Google Документ",
+            format: "application/google-docs"
+        },
+        {
+            url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGZeSdZTI1sP8QwUuLvQBKlPbyxoWTV_W3MRRiMOZmxqKfpoFXMXfSGGdxFzPz5snGNJNWfCAfC2b-/pubhtml",
+            description: "Google Таблица",
+            format: "application/google-sheets"
+        },
+        {
+            url: "https://docs.google.com/presentation/d/e/2PACX-1vTfAt9GkyVgjBZm16VQ6W-34yyTOWlpjE82jdgix_CRMvpTGOvvaCQ_xDe8uwvpIq6KzEph8lEeCwiq/pubembed?start=false&loop=false&delayms=3000",
+            description: "Google Презентация",
+            format: "application/google-slides"
+        },
+        {
+            url: basePath + "sample1.docx",
+            description: "Word документ (DOCX)",
+            format: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        },
+        {
+            url: basePath + "sample2.doc",
+            description: "Word документ (DOC)",
+            format: "application/msword"
+        },
+        {
+            url: basePath + "sample2.xlsx",
+            description: "Excel таблица (XLSX)",
+            format: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        },
+        {
+            url: basePath + "file_example_XLS_100.xls",
+            description: "Excel таблица (XLS)",
+            format: "application/vnd.ms-excel"
+        },
+        {
+            url: basePath + "test.odt",
+            description: "OpenDocument текст",
+            format: "application/vnd.oasis.opendocument.text"
+        },
+        {
+            url: basePath + "React-utf8.txt",
+            description: "Текстовый файл (UTF-8)",
+            format: "text/plain"
+        },
+        {
+            url: basePath + "React-866.txt",
+            description: "Текстовый файл (CP866)",
+            format: "text/plain"
+        },
+        {
+            url: basePath + "React-1251.txt",
+            description: "Текстовый файл (CP1251)",
+            format: "text/plain"
+        },
+        {
+            url: basePath + "React-utf16BE.txt",
+            description: "Текстовый файл (UTF-16BE)",
+            format: "text/plain"
+        },
+        {
+            url: basePath + "React-utf16LE.txt",
+            description: "Текстовый файл (UTF-16LE)",
+            format: "text/plain"
+        },
+        {
+            url: basePath + "clipsave.net-.mp4",
+            description: "Видео файл (MP4)",
+            format: "video/mp4"
+        },
+        {
+            url: basePath + "file_example_MP3_700KB.mp3",
+            description: "Аудио файл (MP3)",
+            format: "audio/mpeg"
         }
     ];
 
