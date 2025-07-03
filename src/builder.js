@@ -116,6 +116,8 @@ function buildWidget() {
       console.log(`📋 Test page size: ${testPageContent.length} characters`);
       if (testPageContent.length > 0) {
         testPageContent = testPageContent.replace('src="../dist/widget.html"', 'src="./widget.html"');
+    testPageContent = testPageContent.replace('href="test-page.css"', 'href="./test-page.css"');
+    testPageContent = testPageContent.replace('src="test-page.js"', 'src="./test-page.js"');
         fs.writeFileSync(indexOutputPath, testPageContent, 'utf8');
         console.log('📋 Test page copied to dist/index.html');
       } else {
@@ -123,6 +125,51 @@ function buildWidget() {
       }
     } else {
       console.log('❌ Test page not found at:', testPagePath);
+    }
+
+    const testDir = path.join(__dirname, '..', 'test');
+    const staticFiles = ['test-page.js', 'test-page.css'];
+    
+    for (const file of staticFiles) {
+      const sourcePath = path.join(testDir, file);
+      const destPath = path.join(distDir, file);
+      
+      if (fs.existsSync(sourcePath)) {
+        try {
+          fs.copyFileSync(sourcePath, destPath);
+          console.log(`📋 Copied ${file} to dist/`);
+        } catch (error) {
+          console.log(`❌ Failed to copy ${file}:`, error.message);
+        }
+      } else {
+        console.log(`❌ Static file not found: ${sourcePath}`);
+      }
+    }
+
+    const publicAssetsDir = path.join(__dirname, '..', 'public', 'assets');
+    const distAssetsDir = path.join(distDir, 'assets');
+    
+    if (fs.existsSync(publicAssetsDir)) {
+      try {
+        if (!fs.existsSync(distAssetsDir)) {
+          fs.mkdirSync(distAssetsDir, { recursive: true });
+        }
+        
+        const assetFiles = fs.readdirSync(publicAssetsDir);
+        for (const file of assetFiles) {
+          const sourcePath = path.join(publicAssetsDir, file);
+          const destPath = path.join(distAssetsDir, file);
+          
+          if (fs.statSync(sourcePath).isFile()) {
+            fs.copyFileSync(sourcePath, destPath);
+            console.log(`📋 Copied asset ${file} to dist/assets/`);
+          }
+        }
+      } catch (error) {
+        console.log(`❌ Failed to copy assets:`, error.message);
+      }
+    } else {
+      console.log('❌ Public assets directory not found at:', publicAssetsDir);
     }
 
     console.log('✅ Widget built successfully!');

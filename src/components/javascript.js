@@ -194,43 +194,43 @@ function setup() {
 
       const eventMap = {
         mousemove: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardMouseEvent(e, "mousemove");
         },
         touchstart: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardTouchEvent(e);
         },
         click: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardMouseEvent(e, "click");
         },
         mousedown: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardMouseEvent(e, "mousedown");
         },
         mouseup: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardMouseEvent(e, "mouseup");
         },
         dblclick: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardMouseEvent(e, "dblclick");
         },
         contextmenu: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardMouseEvent(e, "contextmenu");
         },
         wheel: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardWheelEvent(e);
         },
         touchmove: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardTouchEvent(e);
         },
         touchend: (e) => {
-          showNavButtons(e);
+          this.showNavButtons(e);
           forwardTouchEvent(e);
         },
       };
@@ -1014,7 +1014,7 @@ function setup() {
       // Only set src if it's different (avoid reloading)
       if (cachedIframe.src !== embedUrl) {
         cachedIframe.src = embedUrl;
-        cachedIframe.addEventListener("load", this.hideLoader, {
+        cachedIframe.addEventListener("load", () => this.hideLoader(), {
           once: true,
         });
       } else {
@@ -1047,7 +1047,7 @@ function setup() {
       // Only set src if it's different (avoid reloading)
       if (cachedIframe.src !== embedUrl) {
         cachedIframe.src = embedUrl;
-        cachedIframe.addEventListener("load", this.hideLoader, {
+        cachedIframe.addEventListener("load", () => this.hideLoader(), {
           once: true,
         });
       } else {
@@ -1079,7 +1079,7 @@ function setup() {
       this.iframe.classList.add("hidden");
       document.body.appendChild(videoElement);
 
-      videoElement.addEventListener("loadeddata", this.hideLoader, {
+      videoElement.addEventListener("loadeddata", () => this.hideLoader(), {
         once: true,
       });
 
@@ -1138,7 +1138,7 @@ function setup() {
 
           if (officeCachedIframe.src !== officeUrl) {
             officeCachedIframe.src = officeUrl;
-            officeCachedIframe.addEventListener("load", this.hideLoader, {
+            officeCachedIframe.addEventListener("load", () => this.hideLoader(), {
               once: true,
             });
           } else {
@@ -1153,7 +1153,7 @@ function setup() {
 
             if (pdfCachedIframe.src !== documentUrl) {
               pdfCachedIframe.src = documentUrl;
-              pdfCachedIframe.addEventListener("load", this.hideLoader, {
+              pdfCachedIframe.addEventListener("load", () => this.hideLoader(), {
                 once: true,
               });
             } else {
@@ -1202,7 +1202,7 @@ function setup() {
 
           if (htmlCachedIframe.src !== documentUrl) {
             htmlCachedIframe.src = documentUrl;
-            htmlCachedIframe.addEventListener("load", this.hideLoader, {
+            htmlCachedIframe.addEventListener("load", () => this.hideLoader(), {
               once: true,
             });
           } else {
