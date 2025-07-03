@@ -45,8 +45,7 @@ function addSampleDocuments() {
         {
             url: basePath + "sample.pdf",
             description: "Локальный PDF документ",
-            format: "application/pdf",
-            showAsLink: true
+            format: "application/pdf"
         },
         {
             url: basePath + "sample.svg",
@@ -56,8 +55,7 @@ function addSampleDocuments() {
         {
             url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             // description: "YouTube видео",
-            format: "video/youtube",
-            showAsLink: true
+            format: "video/youtube"
         },
         {
             url: "https://google.com",
@@ -76,7 +74,7 @@ function addSampleDocuments() {
             format: "application/google-sheets"
         },
         {
-            url: "https://docs.google.com/presentation/d/e/2PACX-1vTfAt9GkyVgjBZm16VQ6W-34yyTOWlpjE82jdgix_CRMvpTGOvvaCQ_xDe8uwvpIq6KzEph8lEeCwiq/pub?start=false&loop=false&delayms=3000",
+            url: "https://docs.google.com/presentation/d/e/2PACX-1vTfAt9GkyVgjBZm16VQ6W-34yyTOWlpjE82jdgix_CRMvpTGOvvaCQ_xDe8uwvpIq6KzEph8lEeCwiq/pubembed?start=false&loop=false&delayms=3000",
             description: "Google Презентация",
             format: "application/google-slides"
         },
