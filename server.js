@@ -39,7 +39,7 @@ function setupFileWatcher() {
   console.log('👀 Setting up file watcher...');
   
   const watcher = chokidar.watch([
-    'src/components/**/*.js',
+    'src/widget/**/*.js',
     'src/builder.js',
     'test/**/*.html'
   ], {
@@ -56,9 +56,9 @@ function setupFileWatcher() {
     delete require.cache[fullPath];
     
     delete require.cache[require.resolve('./src/builder')];
-    delete require.cache[require.resolve('./src/components/css.js')];
-    delete require.cache[require.resolve('./src/components/javascript.js')];
-    delete require.cache[require.resolve('./src/components/html.js')];
+    delete require.cache[require.resolve('./src/widget/css.js')];
+    delete require.cache[require.resolve('./src/widget/javascript.js')];
+    delete require.cache[require.resolve('./src/widget/html.js')];
     
     const { buildWidget } = require('./src/builder');
     const success = buildWidget();

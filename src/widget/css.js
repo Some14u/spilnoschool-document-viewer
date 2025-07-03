@@ -87,7 +87,7 @@ data.css = `
         box-sizing: border-box;
         background: white;
         color: black;
-        box-shadow: 0 4px 15px 2px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 3px 15px 0px #0002, 0 0 0 1px #0002;
         margin-inline: auto;
         white-space: pre-wrap;
         word-wrap: break-word;
@@ -208,7 +208,6 @@ data.css = `
         background: rgba(0, 0, 0, 0.8);
         color: white;
         padding: 20px;
-        border-radius: 8px;
         text-align: center;
         font-size: 18px;
         max-width: 400px;
@@ -273,7 +272,7 @@ data.css = `
 
       .fullscreen-btn {
         position: absolute;
-        top: 10px;
+        bottom: 10px;
         right: var(--fullscreen-btn-right, 10px);
         width: 32px;
         height: 32px;

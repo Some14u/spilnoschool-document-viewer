@@ -40,21 +40,22 @@ function sendToWidget(type, payload) {
 }
 
 function addSampleDocuments() {
-    const basePath = window.location.pathname.includes('/dist/') ? '../assets/' : '/assets/';
+    const basePath = 'https://raw.githubusercontent.com/Some14u/spilnoschool-document-viewer/main/public/assets/';
     currentDocuments = [
-        {
-            url: basePath + "sample.pdf",
-            description: "Локальный PDF документ",
-            format: "application/pdf"
-        },
+
         {
             url: basePath + "sample.svg",
             description: "Локальный SVG файл",
             format: "image/svg+xml"
         },
         {
+            url: "/assets/sample.pdf",
+            description: "Локальный PDF документ",
+            format: "application/pdf"
+        },
+        {
             url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            // description: "YouTube видео",
+            description: "YouTube видео",
             format: "video/youtube"
         },
         {
