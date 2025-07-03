@@ -66,6 +66,21 @@ function addSampleDocuments() {
             showAsLink: true
         },
         {
+            url: "https://docs.google.com/document/d/e/2PACX-1vTLDLUxQae6nKmdHCbR4PWNvLb8mnJOQZ_gnuco-CPzLpFtARoF9901J9rWh4N4-w2biUedgCbhZsbX/pub",
+            description: "Google Документ",
+            format: "application/google-docs"
+        },
+        {
+            url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGZeSdZTI1sP8QwUuLvQBKlPbyxoWTV_W3MRRiMOZmxqKfpoFXMXfSGGdxFzPz5snGNJNWfCAfC2b-/pubhtml",
+            description: "Google Таблица",
+            format: "application/google-sheets"
+        },
+        {
+            url: "https://docs.google.com/presentation/d/e/2PACX-1vTfAt9GkyVgjBZm16VQ6W-34yyTOWlpjE82jdgix_CRMvpTGOvvaCQ_xDe8uwvpIq6KzEph8lEeCwiq/pub?start=false&loop=false&delayms=3000",
+            description: "Google Презентация",
+            format: "application/google-slides"
+        },
+        {
             url: basePath + "sample1.docx",
             description: "Word документ (DOCX)",
             format: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
