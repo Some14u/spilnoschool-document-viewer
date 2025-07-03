@@ -303,5 +303,4 @@ data.css = `
         height: 16px;
         fill: white;
       }
-        ОШИБКА СПЕЦИАЛЬНО
 `;
