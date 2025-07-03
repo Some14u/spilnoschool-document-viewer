@@ -21,7 +21,7 @@ data.html = `<!DOCTYPE html>
     <img id="imageViewer" class="image-viewer hidden" />
     <div id="plainTextWrapper" class="plain-text-wrapper hidden"><div id="plainTextContainer" class="plain-text-container"></div></div>
     <div id="unsupportedFormat" class="unsupported-format hidden">
-      <div>Файл в данном формате не поддерживается</div>
+      <div>Ресурс у цьому форматі не підтримується</div>
     </div>
 
     <button id="galleryNavPrev" class="gallery-nav gallery-nav-prev hidden">

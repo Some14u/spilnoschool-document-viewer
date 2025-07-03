@@ -40,7 +40,7 @@ function buildWidget() {
     host: 'localhost:3000' // Default host, can be overridden
   };
 
-  const componentsDir = path.join(__dirname, 'components');
+  const componentsDir = path.join(__dirname, 'widget');
   const distDir = path.join(__dirname, '..', 'dist');
 
   if (!fs.existsSync(distDir)) {
