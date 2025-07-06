@@ -49,6 +49,11 @@ function addSampleDocuments() {
             format: "image/svg+xml"
         },
         {
+            url: basePath + "file_example_MP3_700KB.mp3",
+            description: "Аудио файл (MP3)",
+            format: "audio/mpeg"
+        },
+        {
             url: "/assets/sample.pdf",
             description: "Локальный PDF документ",
             format: "application/pdf"
@@ -133,12 +138,8 @@ function addSampleDocuments() {
             url: basePath + "clipsave.net-.mp4",
             description: "Видео файл (MP4)",
             format: "video/mp4"
-        },
-        {
-            url: basePath + "file_example_MP3_700KB.mp3",
-            description: "Аудио файл (MP3)",
-            format: "audio/mpeg"
         }
+
     ];
 
     sendToWidget('updateDocuments', {
