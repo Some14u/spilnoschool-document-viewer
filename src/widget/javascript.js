@@ -7,6 +7,7 @@ function setup() {
   class DocumentViewer {
     constructor() {
       this.microsoftViewerUrl = "https://view.officeapps.live.com/op/embed.aspx";
+      this.audioPlayerUrl = "https://r8zm973ets.apigw.corezoid.com/widgets/audio-player";
       this.documentsParam = this.getQueryParameter("documents");
       this.indexParam = parseInt(this.getQueryParameter("index")) || 0;
       // this.adobeClientId = "d5c9b76969ff481fb343aabb22d609b0"; // for localhost
@@ -1089,6 +1090,23 @@ function setup() {
       });
     }
 
+    setupAudioViewer(documentUrl) {
+      const audioPlayerUrl = `${this.audioPlayerUrl}?url=${encodeURIComponent(documentUrl)}&enableCors=false`;
+      const format = this.getCurrentFormat();
+      const cachedIframe = this.getOrCreateCachedIframe(documentUrl, format);
+
+      if (cachedIframe.src !== audioPlayerUrl) {
+        cachedIframe.src = audioPlayerUrl;
+        cachedIframe.addEventListener("load", () => this.hideLoader(), {
+          once: true,
+        });
+      } else {
+        this.hideLoader();
+      }
+
+      this.showCachedIframe(cachedIframe);
+    }
+
     loadDocument(index) {
       if (index < 0 || index >= this.documents.length) return;
 
@@ -1189,6 +1207,14 @@ function setup() {
         case "video/wmv":
         case "video/x-matroska":
           this.setupVideoViewer(documentUrl);
+          break;
+        case "audio/mpeg":
+        case "audio/wav":
+        case "audio/ogg;codecs=vorbis":
+        case "audio/ogg;codecs=opus":
+        case "audio/webm;codecs=opus":
+        case "audio/mp4;codecs=mp4a.40.2":
+          this.setupAudioViewer(documentUrl);
           break;
         case "application/google-docs":
         case "application/google-sheets":
