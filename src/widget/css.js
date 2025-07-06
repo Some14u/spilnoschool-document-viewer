@@ -27,6 +27,7 @@ data.css = `
 
       .audio-player-iframe {
         width: calc(100% - 160px) !important;
+        left: 80px !important;
       }
 
       .microsoft-viewer-fix {
