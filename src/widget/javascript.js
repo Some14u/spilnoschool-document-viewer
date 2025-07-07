@@ -143,7 +143,7 @@ function setup() {
       const forwardMouseEvent = (e, type) => {
         const target = pickTarget(e.clientX, e.clientY);
         if (!target) return;
-        
+
         const init = {
           bubbles: true,
           cancelable: true,
