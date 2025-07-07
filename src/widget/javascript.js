@@ -143,7 +143,7 @@ function setup() {
       const forwardMouseEvent = (e, type) => {
         const target = pickTarget(e.clientX, e.clientY);
         if (!target) return;
-        
+
         const init = {
           bubbles: true,
           cancelable: true,
@@ -532,6 +532,15 @@ function setup() {
         }
 
         // Don't set timeout for showAsLink documents - they stay visible
+        return;
+      }
+
+      // Check if current document is audio format
+      const currentFormat = this.getCurrentFormat().toLowerCase();
+      const isAudioFormat = currentFormat.startsWith('audio/');
+      
+      // Don't set timeout for audio documents - they stay visible like showAsLink documents
+      if (isAudioFormat) {
         return;
       }
 
