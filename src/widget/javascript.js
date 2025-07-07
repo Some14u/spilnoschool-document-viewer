@@ -1,44 +1,22 @@
-const host = data.host;
+const documents = data.__request.query_params?.documents || [];
+const config = data.__request.query_params?.config || {};
 
 
 
 
-function setup() {
+
+function script(documents, config) {
   class DocumentViewer {
-    constructor() {
-      this.microsoftViewerUrl = "https://view.officeapps.live.com/op/embed.aspx";
-      this.audioPlayerUrl = "https://r8zm973ets.apigw.corezoid.com/widgets/audio-player";
-      this.documentsParam = this.getQueryParameter("documents");
-      this.indexParam = parseInt(this.getQueryParameter("index")) || 0;
-      // this.adobeClientId = "d5c9b76969ff481fb343aabb22d609b0"; // for localhost
-      this.adobeClientId = "7ef4db68cd074a8391182c8cdbac68bf"; // for apiGW
+    constructor(documents, config = {}) {
+      this.config = config;
+      this.microsoftViewerUrl = this.config.microsoftViewerUrl || "https://view.officeapps.live.com/op/embed.aspx";
+      this.audioPlayerUrl = this.config.audioPlayerUrl || "https://r8zm973ets.apigw.corezoid.com/widgets/audio-player";
+      // this.adobeClientId = this.config.adobeClientId || "d5c9b76969ff481fb343aabb22d609b0"; // for localhost
+      this.adobeClientId = this.config.adobeClientId || "7ef4db68cd074a8391182c8cdbac68bf"; // for apiGW
 
       // Parse documents array or single document
-      this.documents = [];
-      this.currentIndex = 0;
-      this.isGalleryMode = false;
-
-      if (this.documentsParam) {
-        try {
-          // Parse documents parameter as JSON array of objects
-          const documentsArray = JSON.parse(decodeURIComponent(this.documentsParam));
-          if (Array.isArray(documentsArray) && documentsArray.length > 0) {
-            this.documents = documentsArray;
-            this.isGalleryMode = documentsArray.length > 1;
-          }
-        } catch (e) {
-          console.error("Failed to parse documents parameter:", e);
-        }
-      }
-
-      // Ensure we have at least one document - show error if no documents provided
-      if (this.documents.length === 0) {
-        this.documents = [{
-          url: "",
-          name: "No Document Provided",
-          format: "",
-        },];
-      }
+      this.documents = documents || [];
+      this.isGalleryMode = this.documents.length > 1;
 
       this.iframe = document.getElementById("viewer");
       this.plainTextWrapper = document.getElementById("plainTextWrapper");
@@ -59,7 +37,7 @@ function setup() {
       this.currentViewer = null;
 
       this.iframeCache = new Map(); // Key: documentUrl + format, Value: iframe element
-      this.MAX_CACHED_IFRAMES = 15; // Reasonable limit to prevent memory issues
+      this.maxCachedIframes = this.config.maxCachedIframes || 20; // Reasonable limit to prevent memory issues
       this.currentCachedIframe = null;
     }
 
@@ -331,11 +309,6 @@ function setup() {
             // Update current index
             this.currentIndex = Math.max(0, Math.min(newIndex, this.documents.length - 1));
 
-            // Update URL with new documents and index
-            const documentsParam = encodeURIComponent(JSON.stringify(this.documents));
-            const newUrl = `${window.location.pathname}?documents=${documentsParam}&index=${this.currentIndex}`;
-            window.history.replaceState({}, "", newUrl);
-
             // Hide loader and initialize document viewer with new data
             this.hideLoader();
             this.setupGalleryNavigation();
@@ -385,11 +358,6 @@ function setup() {
 
           if (targetIndex >= 0 && targetIndex < this.documents.length) {
             this.currentIndex = targetIndex;
-
-            // Update URL with new index
-            const documentsParam = encodeURIComponent(JSON.stringify(this.documents));
-            const newUrl = `${window.location.pathname}?documents=${documentsParam}&index=${this.currentIndex}`;
-            window.history.replaceState({}, "", newUrl);
 
             // Load the selected document
             this.loadDocument(this.currentIndex);
@@ -538,7 +506,7 @@ function setup() {
       // Check if current document is audio format
       const currentFormat = this.getCurrentFormat().toLowerCase();
       const isAudioFormat = currentFormat.startsWith('audio/');
-      
+
       // Don't set timeout for audio documents - they stay visible like showAsLink documents
       if (isAudioFormat) {
         return;
@@ -772,7 +740,7 @@ function setup() {
 
       document.body.appendChild(newIframe);
 
-      if (this.iframeCache.size >= this.MAX_CACHED_IFRAMES) {
+      if (this.iframeCache.size >= this.maxCachedIframes) {
         const oldestKey = this.iframeCache.keys().next().value;
         const oldestIframe = this.iframeCache.get(oldestKey);
         if (oldestIframe && oldestIframe.parentNode) {
@@ -1273,9 +1241,8 @@ function setup() {
       document.addEventListener("DOMContentLoaded", () => {
         // Only proceed with document loading if we have valid documents
         if (this.documents.length > 0 && this.documents[0] && this.documents[0].url) {
-          // Validate and set initial index
-          const initialIndex = Math.max(0, Math.min(this.indexParam, this.documents.length - 1));
-          this.currentIndex = initialIndex;
+
+          this.currentIndex = Math.max(0, Math.min(this.config.index ?? 0, this.documents.length - 1));
 
           this.setupGalleryNavigation();
           this.loadDocument(this.currentIndex);
@@ -1286,10 +1253,15 @@ function setup() {
 
   }
 
-  const viewer = new DocumentViewer();
+  const viewer = new DocumentViewer(documents, config);
   viewer.init();
+  console.log("Document Viewer initialized")
 }
 
-const javaScript = `(${setup.toString()})();`;
+const javaScript = `
+const documents = ${JSON.stringify(documents, null, 2)};
+const config = ${JSON.stringify(config, null, 2)};
+
+(${script.toString()})(documents, config);`;
 
 data.javaScript = javaScript;

@@ -37,7 +37,24 @@ function buildWidget() {
   console.log('🔨 Starting widget build...');
 
   global.data = {
-    host: 'localhost:3000' // Default host, can be overridden
+    host: 'localhost:3000', // Default host, can be overridden
+    __request: {
+      query_params: { // At this point fields should have already been parsed into objects
+        documents: [
+          {
+            url: "/assets/sample.pdf",
+            name: "Sample PDF Document",
+            format: "application/pdf"
+          },
+          {
+            url: "https://raw.githubusercontent.com/Some14u/spilnoschool-document-viewer/main/public/assets/file_example_MP3_700KB.mp3",
+            name: "Sample Audio File",
+            format: "audio/mpeg"
+          }
+        ], // Test documents
+        config: {} // Empty object
+      }
+    }
   };
 
   const componentsDir = path.join(__dirname, 'widget');
