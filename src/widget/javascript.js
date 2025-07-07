@@ -7,6 +7,7 @@ function setup() {
   class DocumentViewer {
     constructor() {
       this.microsoftViewerUrl = "https://view.officeapps.live.com/op/embed.aspx";
+      this.audioPlayerUrl = "https://r8zm973ets.apigw.corezoid.com/widgets/audio-player";
       this.documentsParam = this.getQueryParameter("documents");
       this.indexParam = parseInt(this.getQueryParameter("index")) || 0;
       // this.adobeClientId = "d5c9b76969ff481fb343aabb22d609b0"; // for localhost
@@ -117,12 +118,12 @@ function setup() {
     }
 
     showOverlay() {
-      const rect = this.iframe.getBoundingClientRect();
+      const rect = (this.currentCachedIframe || this.iframe).getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
 
       if (document.getElementById("iframeMouseOverlay")) return;
 
-      const container = this.iframe.parentElement;
+      const container = (this.currentCachedIframe || this.iframe).parentElement;
       if (getComputedStyle(container).position === "static") {
         container.style.position = "relative";
       }
@@ -142,6 +143,7 @@ function setup() {
       const forwardMouseEvent = (e, type) => {
         const target = pickTarget(e.clientX, e.clientY);
         if (!target) return;
+        
         const init = {
           bubbles: true,
           cancelable: true,
@@ -709,6 +711,10 @@ function setup() {
       this.iframe.src = "";
       this.plainTextContainer.innerText = "";
 
+      this.iframeCache.forEach((cachedIframe) => {
+        cachedIframe.classList.remove("audio-player-iframe");
+      });
+
       const existingVideo = document.getElementById("videoPlayer");
       if (existingVideo) {
         existingVideo.remove();
@@ -1089,6 +1095,25 @@ function setup() {
       });
     }
 
+    setupAudioViewer(documentUrl) {
+      const audioPlayerUrl = `${this.audioPlayerUrl}?url=${encodeURIComponent(documentUrl)}&enableCors=false`;
+      const format = this.getCurrentFormat();
+      const cachedIframe = this.getOrCreateCachedIframe(documentUrl, format);
+
+      if (cachedIframe.src !== audioPlayerUrl) {
+        cachedIframe.src = audioPlayerUrl;
+        cachedIframe.addEventListener("load", () => this.hideLoader(), {
+          once: true,
+        });
+      } else {
+        this.hideLoader();
+      }
+
+      cachedIframe.classList.add("audio-player-iframe");
+
+      this.showCachedIframe(cachedIframe);
+    }
+
     loadDocument(index) {
       if (index < 0 || index >= this.documents.length) return;
 
@@ -1189,6 +1214,14 @@ function setup() {
         case "video/wmv":
         case "video/x-matroska":
           this.setupVideoViewer(documentUrl);
+          break;
+        case "audio/mpeg":
+        case "audio/wav":
+        case "audio/ogg;codecs=vorbis":
+        case "audio/ogg;codecs=opus":
+        case "audio/webm;codecs=opus":
+        case "audio/mp4;codecs=mp4a.40.2":
+          this.setupAudioViewer(documentUrl);
           break;
         case "application/google-docs":
         case "application/google-sheets":
