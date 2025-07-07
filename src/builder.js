@@ -39,8 +39,8 @@ function buildWidget() {
   global.data = {
     host: 'localhost:3000', // Default host, can be overridden
     __request: {
-      query_params: {
-        documents: JSON.stringify([
+      query_params: { // At this point fields should have already been parsed into objects
+        documents: [
           {
             url: "/assets/sample.pdf",
             name: "Sample PDF Document",
@@ -51,8 +51,8 @@ function buildWidget() {
             name: "Sample Audio File",
             format: "audio/mpeg"
           }
-        ]), // Test documents array as string
-        config: '{}' // Empty object as string (will be parsed by javascript.js)
+        ], // Test documents
+        config: {} // Empty object
       }
     }
   };

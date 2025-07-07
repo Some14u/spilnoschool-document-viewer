@@ -1,5 +1,5 @@
-const documents = data.__request.query_params?.documents ? JSON.parse(decodeURIComponent(data.__request.query_params.documents)) : [];
-const config = data.__request.query_params?.config ? JSON.parse(decodeURIComponent(data.__request.query_params.config)) : {};
+const documents = data.__request.query_params?.documents || [];
+const config = data.__request.query_params?.config || {};
 
 
 
