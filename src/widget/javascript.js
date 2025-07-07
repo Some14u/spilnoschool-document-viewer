@@ -1259,8 +1259,8 @@ function script(documents, config) {
 }
 
 const javaScript = `
-const documents = data.__request.query_params?.documents ? JSON.parse(decodeURIComponent(data.__request.query_params.documents)) : [];
-const config = data.__request.query_params?.config ? JSON.parse(decodeURIComponent(data.__request.query_params.config)) : {};
+const documents = ${JSON.stringify(documents, null, 2)};
+const config = ${JSON.stringify(config, null, 2)};
 
 (${script.toString()})(documents, config);`;
 
