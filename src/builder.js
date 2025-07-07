@@ -40,7 +40,18 @@ function buildWidget() {
     host: 'localhost:3000', // Default host, can be overridden
     __request: {
       query_params: {
-        documents: '[]', // Empty array as string (will be parsed by javascript.js)
+        documents: JSON.stringify([
+          {
+            url: "/assets/sample.pdf",
+            name: "Sample PDF Document",
+            format: "application/pdf"
+          },
+          {
+            url: "https://raw.githubusercontent.com/Some14u/spilnoschool-document-viewer/main/public/assets/file_example_MP3_700KB.mp3",
+            name: "Sample Audio File",
+            format: "audio/mpeg"
+          }
+        ]), // Test documents array as string
         config: '{}' // Empty object as string (will be parsed by javascript.js)
       }
     }
