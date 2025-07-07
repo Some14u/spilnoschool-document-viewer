@@ -535,6 +535,15 @@ function setup() {
         return;
       }
 
+      // Check if current document is audio format
+      const currentFormat = this.getCurrentFormat().toLowerCase();
+      const isAudioFormat = currentFormat.startsWith('audio/');
+      
+      // Don't set timeout for audio documents - they stay visible like showAsLink documents
+      if (isAudioFormat) {
+        return;
+      }
+
       this.hideFileNameTimeout = setTimeout(() => {
         this.descriptionDisplay.classList.add("fade-out");
         setTimeout(() => {
