@@ -117,6 +117,10 @@ data.css = `
         scale: 1.3;
       }
 
+      .viewer-toolbar ul {
+        padding-bottom: 8px !important;
+      }
+
       .viewer-toolbar li {
         background-color: rgba(128, 128, 128, 0.8);
       }
