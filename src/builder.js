@@ -37,7 +37,13 @@ function buildWidget() {
   console.log('🔨 Starting widget build...');
 
   global.data = {
-    host: 'localhost:3000' // Default host, can be overridden
+    host: 'localhost:3000', // Default host, can be overridden
+    __request: {
+      query_params: {
+        documents: '[]', // Empty array as string (will be parsed by javascript.js)
+        config: '{}' // Empty object as string (will be parsed by javascript.js)
+      }
+    }
   };
 
   const componentsDir = path.join(__dirname, 'widget');
