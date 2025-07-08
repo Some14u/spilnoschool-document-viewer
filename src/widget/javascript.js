@@ -78,7 +78,7 @@ function script(documents, config) {
 
     shouldShowDownloadButton() {
       const currentDoc = this.documents[this.currentIndex];
-      
+
       if (currentDoc && currentDoc.showAsLink) {
         return false;
       }
@@ -666,10 +666,10 @@ function script(documents, config) {
       if (this.shouldShowDownloadButton()) {
         this.downloadLink.classList.remove("hidden");
         this.downloadBtn.classList.remove("hidden");
-        
+
         this.downloadBtn.replaceWith(this.downloadBtn.cloneNode(true));
         this.downloadBtn = document.getElementById("downloadBtn");
-        
+
         this.downloadBtn.addEventListener('click', async (e) => {
           e.preventDefault();
           await this.downloadFile();
@@ -684,25 +684,25 @@ function script(documents, config) {
       const currentDoc = this.documents[this.currentIndex];
       const documentUrl = currentDoc.url;
       const fileName = currentDoc.fileName || this.extractFileNameFromUrl(documentUrl) || 'download';
-      
+
       this.showLoader();
-      
+
       try {
         const response = await fetch(documentUrl);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
-        
+
         const a = document.createElement('a');
         a.href = url;
         a.download = fileName;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        
+
         URL.revokeObjectURL(url);
       } catch (error) {
         console.warn('Fetch download failed, falling back to direct link:', error);
