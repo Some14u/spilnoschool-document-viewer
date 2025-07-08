@@ -361,4 +361,37 @@ data.css = `
         height: 16px;
         fill: white;
       }
+
+      .download-link {
+        text-decoration: none;
+      }
+
+      .download-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(128, 128, 128, 0.8);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease, background-color 0.15s;
+        opacity: 1;
+      }
+
+      .download-btn:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      .download-btn.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .download-btn svg {
+        width: 16px;
+        height: 16px;
+        color: white;
+        }
 `;

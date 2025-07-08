@@ -31,6 +31,8 @@ function script(documents, config) {
       this.fullscreenBtn = document.getElementById("fullscreenBtn");
       this.toggleDescriptionBtn = document.getElementById("toggleDescriptionBtn");
       this.controlButtonsContainer = document.getElementById("controlButtonsContainer");
+      this.downloadLink = document.getElementById("downloadLink");
+      this.downloadBtn = document.getElementById("downloadBtn");
 
       this.galleryNavPrevHandler = null;
       this.galleryNavNextHandler = null;
@@ -68,6 +70,24 @@ function script(documents, config) {
       // Don't show fullscreen button for video formats (they have their own)
       const currentFormat = this.getCurrentFormat().toLowerCase();
       if (currentFormat.startsWith("video/") || currentFormat === "video/youtube") {
+        return false;
+      }
+
+      return true;
+    }
+
+    shouldShowDownloadButton() {
+      const currentFormat = this.getCurrentFormat().toLowerCase();
+
+      if (currentFormat === "text/html" || currentFormat === "application/xhtml+xml") {
+        return false;
+      }
+
+      if (currentFormat.startsWith("application/google-")) {
+        return false;
+      }
+
+      if (currentFormat === "video/youtube") {
         return false;
       }
 
@@ -407,6 +427,10 @@ function script(documents, config) {
         this.toggleDescriptionBtn.classList.remove("fade-out");
       }
 
+      if (this.downloadBtn && this.shouldShowDownloadButton()) {
+        this.downloadBtn.classList.remove("fade-out");
+      }
+
       // Show navigation buttons only in gallery mode
       if (this.isGalleryMode) {
         if (this.currentIndex === 0) {
@@ -434,6 +458,9 @@ function script(documents, config) {
         if (this.toggleDescriptionBtn) {
           this.toggleDescriptionBtn.classList.add("fade-out");
         }
+        if (this.downloadBtn && this.shouldShowDownloadButton()) {
+          this.downloadBtn.classList.add("fade-out");
+        }
         this.showOverlay();
       }, 2000);
     }
@@ -449,6 +476,9 @@ function script(documents, config) {
       }
       if (this.toggleDescriptionBtn) {
         this.toggleDescriptionBtn.classList.add("fade-out");
+      }
+      if (this.downloadBtn && this.shouldShowDownloadButton()) {
+        this.downloadBtn.classList.add("fade-out");
       }
       this.showOverlay();
     }
@@ -487,7 +517,7 @@ function script(documents, config) {
       // Check if current document uses viewerJS (image formats)
       const documentFormat = this.getCurrentFormat().toLowerCase();
       const isViewerJSFormat = [
-        "image/gif", "image/jpg", "image/jpeg", "image/png", 
+        "image/gif", "image/jpg", "image/jpeg", "image/png",
         "image/svg+xml", "image/bmp", "image/webp"
       ].includes(documentFormat);
 
@@ -623,6 +653,22 @@ function script(documents, config) {
           this.showDocumentDescription();
         });
         this.updateToggleButtonState();
+      }
+    }
+
+    setupDownloadButton() {
+      if (this.shouldShowDownloadButton()) {
+        const currentDoc = this.documents[this.currentIndex];
+        const documentUrl = currentDoc.url;
+        const fileName = currentDoc.fileName || "";
+
+        this.downloadLink.href = "https://sim.simulator.company/api/1.0/image?src=" + documentUrl;
+        this.downloadLink.download = fileName;
+        this.downloadLink.classList.remove("hidden");
+        this.downloadBtn.classList.remove("hidden");
+      } else {
+        this.downloadLink.classList.add("hidden");
+        this.downloadBtn.classList.add("hidden");
       }
     }
 
@@ -1278,6 +1324,7 @@ function script(documents, config) {
 
       // Setup fullscreen button based on current document format
       this.setupFullscreenButton();
+      this.setupDownloadButton();
     }
 
     init() {

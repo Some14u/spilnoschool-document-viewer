@@ -45,6 +45,14 @@ data.html = `<!DOCTYPE html>
         </svg>
       </button>
 
+      <a id="downloadLink" target="_blank" class="download-link hidden">
+        <button id="downloadBtn" class="download-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+            <path fill="none" stroke="currentColor" stroke-width="22" d="m147 70-47 48-47-48m-25 45v51h144v-51M100 10v108" />
+          </svg>
+        </button>
+      </a>
+
       <button id="fullscreenBtn" class="fullscreen-btn hidden">
         <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
           <path d="M10 15H15V10H13.2V13.2H10V15ZM6 15V13.2H2.8V10H1V15H6ZM10 2.8H12.375H13.2V6H15V1H10V2.8ZM6 1V2.8H2.8V6H1V1H6Z" />
