@@ -296,6 +296,11 @@ data.css = `
         z-index: 1000;
       }
 
+      .control-buttons-container.anchor-top {
+        bottom: unset;
+        top: 10px;
+      }
+
       .fullscreen-btn {
         width: 32px;
         height: 32px;

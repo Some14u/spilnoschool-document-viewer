@@ -497,6 +497,16 @@ function script(documents, config) {
         this.descriptionDisplay.classList.remove("shift-up");
       }
 
+      // Apply anchor-top for video content, but NOT for showAsLink documents
+      const isVideoContent = documentFormat.startsWith("video/");
+      const isShowAsLink = currentDoc && currentDoc.showAsLink;
+      
+      if (isVideoContent && !isShowAsLink) {
+        this.controlButtonsContainer.classList.add("anchor-top");
+      } else {
+        this.controlButtonsContainer.classList.remove("anchor-top");
+      }
+
       if (currentDoc.showAsLink) {
         this.descriptionDisplay.classList.add("show-as-link");
       } else {
