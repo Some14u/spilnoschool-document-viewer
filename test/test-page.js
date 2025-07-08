@@ -51,7 +51,8 @@ function addSampleDocuments() {
         {
             url: basePath + "file_example_MP3_700KB.mp3",
             description: "Аудио файл (MP3)",
-            format: "audio/mpeg"
+            format: "audio/mpeg",
+            showAsLink: true
         },
         {
             url: "/assets/sample.pdf",
