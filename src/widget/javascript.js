@@ -77,6 +77,12 @@ function script(documents, config) {
     }
 
     shouldShowDownloadButton() {
+      const currentDoc = this.documents[this.currentIndex];
+      
+      if (currentDoc && currentDoc.showAsLink) {
+        return false;
+      }
+
       const currentFormat = this.getCurrentFormat().toLowerCase();
 
       if (currentFormat === "text/html" || currentFormat === "application/xhtml+xml") {
