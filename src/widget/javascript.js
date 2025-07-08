@@ -78,6 +78,14 @@ function script(documents, config) {
 
     shouldShowDownloadButton() {
       const currentDoc = this.documents[this.currentIndex];
+      
+      const allowDownload = currentDoc?.allowDownload !== undefined 
+        ? currentDoc.allowDownload 
+        : (this.config.allowDownload !== undefined ? this.config.allowDownload : true);
+      
+      if (!allowDownload) {
+        return false;
+      }
 
       if (currentDoc && currentDoc.showAsLink) {
         return false;
