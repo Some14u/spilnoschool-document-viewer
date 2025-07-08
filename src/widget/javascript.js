@@ -31,6 +31,8 @@ function script(documents, config) {
       this.fullscreenBtn = document.getElementById("fullscreenBtn");
       this.toggleDescriptionBtn = document.getElementById("toggleDescriptionBtn");
       this.controlButtonsContainer = document.getElementById("controlButtonsContainer");
+      this.downloadLink = document.getElementById("downloadLink");
+      this.downloadBtn = document.getElementById("downloadBtn");
 
       this.galleryNavPrevHandler = null;
       this.galleryNavNextHandler = null;
@@ -68,6 +70,30 @@ function script(documents, config) {
       // Don't show fullscreen button for video formats (they have their own)
       const currentFormat = this.getCurrentFormat().toLowerCase();
       if (currentFormat.startsWith("video/") || currentFormat === "video/youtube") {
+        return false;
+      }
+
+      return true;
+    }
+
+    shouldShowDownloadButton() {
+      const currentDoc = this.documents[this.currentIndex];
+
+      if (currentDoc && currentDoc.showAsLink) {
+        return false;
+      }
+
+      const currentFormat = this.getCurrentFormat().toLowerCase();
+
+      if (currentFormat === "text/html" || currentFormat === "application/xhtml+xml") {
+        return false;
+      }
+
+      if (currentFormat.startsWith("application/google-")) {
+        return false;
+      }
+
+      if (currentFormat === "video/youtube") {
         return false;
       }
 
@@ -407,6 +433,10 @@ function script(documents, config) {
         this.toggleDescriptionBtn.classList.remove("fade-out");
       }
 
+      if (this.downloadBtn && this.shouldShowDownloadButton()) {
+        this.downloadBtn.classList.remove("fade-out");
+      }
+
       // Show navigation buttons only in gallery mode
       if (this.isGalleryMode) {
         if (this.currentIndex === 0) {
@@ -434,6 +464,9 @@ function script(documents, config) {
         if (this.toggleDescriptionBtn) {
           this.toggleDescriptionBtn.classList.add("fade-out");
         }
+        if (this.downloadBtn && this.shouldShowDownloadButton()) {
+          this.downloadBtn.classList.add("fade-out");
+        }
         this.showOverlay();
       }, 2000);
     }
@@ -449,6 +482,9 @@ function script(documents, config) {
       }
       if (this.toggleDescriptionBtn) {
         this.toggleDescriptionBtn.classList.add("fade-out");
+      }
+      if (this.downloadBtn && this.shouldShowDownloadButton()) {
+        this.downloadBtn.classList.add("fade-out");
       }
       this.showOverlay();
     }
@@ -487,7 +523,7 @@ function script(documents, config) {
       // Check if current document uses viewerJS (image formats)
       const documentFormat = this.getCurrentFormat().toLowerCase();
       const isViewerJSFormat = [
-        "image/gif", "image/jpg", "image/jpeg", "image/png", 
+        "image/gif", "image/jpg", "image/jpeg", "image/png",
         "image/svg+xml", "image/bmp", "image/webp"
       ].includes(documentFormat);
 
@@ -636,6 +672,66 @@ function script(documents, config) {
       }
     }
 
+    setupDownloadButton() {
+      if (this.shouldShowDownloadButton()) {
+        this.downloadLink.classList.remove("hidden");
+        this.downloadBtn.classList.remove("hidden");
+
+        this.downloadBtn.replaceWith(this.downloadBtn.cloneNode(true));
+        this.downloadBtn = document.getElementById("downloadBtn");
+
+        this.downloadBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          await this.downloadFile();
+        });
+      } else {
+        this.downloadLink.classList.add("hidden");
+        this.downloadBtn.classList.add("hidden");
+      }
+    }
+
+    async downloadFile() {
+      const currentDoc = this.documents[this.currentIndex];
+      const documentUrl = currentDoc.url;
+      const fileName = currentDoc.fileName || this.extractFileNameFromUrl(documentUrl) || 'download';
+
+      this.showLoader();
+
+      try {
+        const response = await fetch(documentUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.warn('Fetch download failed, falling back to direct link:', error);
+        window.open(documentUrl, '_blank');
+      } finally {
+        this.hideLoader();
+      }
+    }
+
+    extractFileNameFromUrl(url) {
+      try {
+        const pathname = new URL(url).pathname;
+        const filename = pathname.split('/').pop();
+        return filename && filename.includes('.') ? filename : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
     updateToggleButtonState() {
       if (this.toggleDescriptionBtn) {
         this.toggleDescriptionBtn.classList.toggle('enabled', this.showDescriptionEnabled);
@@ -763,6 +859,10 @@ function script(documents, config) {
 
     hideLoader() {
       this.loader.classList.toggle("hidden", true);
+    }
+
+    showLoader() {
+      this.loader.classList.toggle("hidden", false);
     }
 
     getQueryParameter(param) {
@@ -1288,6 +1388,7 @@ function script(documents, config) {
 
       // Setup fullscreen button based on current document format
       this.setupFullscreenButton();
+      this.setupDownloadButton();
     }
 
     init() {
