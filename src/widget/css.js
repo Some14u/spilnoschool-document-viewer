@@ -1,4 +1,8 @@
 data.css = `
+      :root {
+        --brandColor: #F88010;
+      }
+
       .hidden {
         display: none !important;
       }
@@ -279,10 +283,16 @@ data.css = `
         background: rgba(0, 0, 0, 0.7);
       }
 
-      .fullscreen-btn {
+      .control-buttons-container {
         position: absolute;
         bottom: 10px;
-        right: var(--fullscreen-btn-right, 10px);
+        right: 10px;
+        display: flex;
+        gap: 5px;
+        z-index: 1000;
+      }
+
+      .fullscreen-btn {
         width: 32px;
         height: 32px;
         border-radius: 50%;
@@ -292,7 +302,6 @@ data.css = `
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1000;
         transition: opacity 0.3s ease, background-color 0.15s;
         opacity: 1;
       }
@@ -307,6 +316,43 @@ data.css = `
       }
 
       .fullscreen-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: white;
+      }
+
+      .toggle-description-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(128, 128, 128, 0.8);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease, background-color 0.15s;
+        opacity: 1;
+      }
+
+      .toggle-description-btn:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      .toggle-description-btn.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .toggle-description-btn.enabled {
+        background: var(--brandColor);
+      }
+
+      .toggle-description-btn.enabled:hover {
+        background: color-mix(in srgb, var(--brandColor) 90%, black);
+      }
+
+      .toggle-description-btn svg {
         width: 16px;
         height: 16px;
         fill: white;

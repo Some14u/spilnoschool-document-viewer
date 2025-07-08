@@ -9,6 +9,7 @@ function script(documents, config) {
   class DocumentViewer {
     constructor(documents, config = {}) {
       this.config = config;
+      this.showDescriptionEnabled = this.config.showDescription || false;
       this.microsoftViewerUrl = this.config.microsoftViewerUrl || "https://view.officeapps.live.com/op/embed.aspx";
       this.audioPlayerUrl = this.config.audioPlayerUrl || "https://r8zm973ets.apigw.corezoid.com/widgets/audio-player";
       // this.adobeClientId = this.config.adobeClientId || "d5c9b76969ff481fb343aabb22d609b0"; // for localhost
@@ -28,6 +29,8 @@ function script(documents, config) {
       this.unsupportedFormat = document.getElementById("unsupportedFormat");
       this.descriptionDisplay = document.getElementById("descriptionDisplay");
       this.fullscreenBtn = document.getElementById("fullscreenBtn");
+      this.toggleDescriptionBtn = document.getElementById("toggleDescriptionBtn");
+      this.controlButtonsContainer = document.getElementById("controlButtonsContainer");
 
       this.galleryNavPrevHandler = null;
       this.galleryNavNextHandler = null;
@@ -400,6 +403,10 @@ function script(documents, config) {
         this.fullscreenBtn.classList.remove("fade-out");
       }
 
+      if (this.toggleDescriptionBtn) {
+        this.toggleDescriptionBtn.classList.remove("fade-out");
+      }
+
       // Show navigation buttons only in gallery mode
       if (this.isGalleryMode) {
         if (this.currentIndex === 0) {
@@ -424,6 +431,9 @@ function script(documents, config) {
         if (this.shouldShowFullscreenButton()) {
           this.fullscreenBtn.classList.add("fade-out");
         }
+        if (this.toggleDescriptionBtn) {
+          this.toggleDescriptionBtn.classList.add("fade-out");
+        }
         this.showOverlay();
       }, 2000);
     }
@@ -436,6 +446,9 @@ function script(documents, config) {
       }
       if (this.shouldShowFullscreenButton()) {
         this.fullscreenBtn.classList.add("fade-out");
+      }
+      if (this.toggleDescriptionBtn) {
+        this.toggleDescriptionBtn.classList.add("fade-out");
       }
       this.showOverlay();
     }
@@ -457,6 +470,10 @@ function script(documents, config) {
       const currentDoc = this.documents[this.currentIndex];
       if (!currentDoc) return;
 
+      // Check if description should be shown based on toggle state or document override
+      const shouldShowDescription = currentDoc.showDescription !== undefined
+        ? currentDoc.showDescription
+        : this.showDescriptionEnabled;
 
       let description = currentDoc.description;
       if (!description || description.trim() === "" || description === "Document") {
@@ -473,14 +490,16 @@ function script(documents, config) {
         this.descriptionDisplay.classList.remove("show-as-link");
       }
 
-      const descriptionText = document.createElement('div');
-      descriptionText.className = 'description-text';
-      descriptionText.textContent = description;
-      this.descriptionDisplay.appendChild(descriptionText);
+      if (shouldShowDescription) {
+        const descriptionText = document.createElement('div');
+        descriptionText.className = 'description-text';
+        descriptionText.textContent = description;
+        this.descriptionDisplay.appendChild(descriptionText);
+      }
 
       clearTimeout(this.hideFileNameTimeout);
 
-      // Handle showAsLink documents
+      // Handle showAsLink documents - always show link regardless of toggle
       if (currentDoc.showAsLink) {
         const documentUrl = this.getCurrentDocument();
 
@@ -503,21 +522,20 @@ function script(documents, config) {
         return;
       }
 
+      if (!shouldShowDescription) {
+        this.descriptionDisplay.classList.add("hidden");
+        return;
+      }
+
       // Check if current document is audio format
       const currentFormat = this.getCurrentFormat().toLowerCase();
       const isAudioFormat = currentFormat.startsWith('audio/');
 
-      // Don't set timeout for audio documents - they stay visible like showAsLink documents
+      // Don't set timeout for audio documents when description is enabled
       if (isAudioFormat) {
         return;
       }
 
-      this.hideFileNameTimeout = setTimeout(() => {
-        this.descriptionDisplay.classList.add("fade-out");
-        setTimeout(() => {
-          this.descriptionDisplay.classList.add("hidden");
-        }, 300);
-      }, 5000);
     }
 
     setupGalleryNavigation() {
@@ -581,6 +599,23 @@ function script(documents, config) {
         this.fullscreenBtn.addEventListener("click", () => this.toggleFullscreen());
       } else {
         this.fullscreenBtn.classList.add("hidden");
+      }
+    }
+
+    setupToggleDescriptionButton() {
+      if (this.toggleDescriptionBtn) {
+        this.toggleDescriptionBtn.addEventListener('click', () => {
+          this.showDescriptionEnabled = !this.showDescriptionEnabled;
+          this.updateToggleButtonState();
+          this.showDocumentDescription();
+        });
+        this.updateToggleButtonState();
+      }
+    }
+
+    updateToggleButtonState() {
+      if (this.toggleDescriptionBtn) {
+        this.toggleDescriptionBtn.classList.toggle('enabled', this.showDescriptionEnabled);
       }
     }
 
@@ -1245,6 +1280,7 @@ function script(documents, config) {
           this.currentIndex = Math.max(0, Math.min(this.config.index ?? 0, this.documents.length - 1));
 
           this.setupGalleryNavigation();
+          this.setupToggleDescriptionButton();
           this.loadDocument(this.currentIndex);
           this.showDocumentDescription();
         }
