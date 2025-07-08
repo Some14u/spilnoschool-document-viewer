@@ -484,6 +484,19 @@ function script(documents, config) {
       this.descriptionDisplay.className = "description-display";
       this.descriptionDisplay.classList.remove("hidden", "fade-out");
 
+      // Check if current document uses viewerJS (image formats)
+      const documentFormat = this.getCurrentFormat().toLowerCase();
+      const isViewerJSFormat = [
+        "image/gif", "image/jpg", "image/jpeg", "image/png", 
+        "image/svg+xml", "image/bmp", "image/webp"
+      ].includes(documentFormat);
+
+      if (isViewerJSFormat) {
+        this.descriptionDisplay.classList.add("shift-up");
+      } else {
+        this.descriptionDisplay.classList.remove("shift-up");
+      }
+
       if (currentDoc.showAsLink) {
         this.descriptionDisplay.classList.add("show-as-link");
       } else {
@@ -528,8 +541,8 @@ function script(documents, config) {
       }
 
       // Check if current document is audio format
-      const currentFormat = this.getCurrentFormat().toLowerCase();
-      const isAudioFormat = currentFormat.startsWith('audio/');
+      const audioFormat = this.getCurrentFormat().toLowerCase();
+      const isAudioFormat = audioFormat.startsWith('audio/');
 
       // Don't set timeout for audio documents when description is enabled
       if (isAudioFormat) {

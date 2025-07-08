@@ -229,7 +229,7 @@ data.css = `
 
       .description-display {
         position: absolute;
-        bottom: 50px;
+        bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.7);
@@ -251,6 +251,10 @@ data.css = `
         display: flex;
         flex-direction: column;
         gap: 10px;
+      }
+
+      .description-display.shift-up {
+        bottom: 50px;
       }
 
       .description-display.fade-out {
