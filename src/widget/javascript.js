@@ -658,17 +658,61 @@ function script(documents, config) {
 
     setupDownloadButton() {
       if (this.shouldShowDownloadButton()) {
-        const currentDoc = this.documents[this.currentIndex];
-        const documentUrl = currentDoc.url;
-        const fileName = currentDoc.fileName || "";
-
-        this.downloadLink.href = "https://sim.simulator.company/api/1.0/image?src=" + documentUrl;
-        this.downloadLink.download = fileName;
         this.downloadLink.classList.remove("hidden");
         this.downloadBtn.classList.remove("hidden");
+        
+        this.downloadBtn.replaceWith(this.downloadBtn.cloneNode(true));
+        this.downloadBtn = document.getElementById("downloadBtn");
+        
+        this.downloadBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          await this.downloadFile();
+        });
       } else {
         this.downloadLink.classList.add("hidden");
         this.downloadBtn.classList.add("hidden");
+      }
+    }
+
+    async downloadFile() {
+      const currentDoc = this.documents[this.currentIndex];
+      const documentUrl = currentDoc.url;
+      const fileName = currentDoc.fileName || this.extractFileNameFromUrl(documentUrl) || 'download';
+      
+      this.showLoader();
+      
+      try {
+        const response = await fetch(documentUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.warn('Fetch download failed, falling back to direct link:', error);
+        window.open(documentUrl, '_blank');
+      } finally {
+        this.hideLoader();
+      }
+    }
+
+    extractFileNameFromUrl(url) {
+      try {
+        const pathname = new URL(url).pathname;
+        const filename = pathname.split('/').pop();
+        return filename && filename.includes('.') ? filename : null;
+      } catch (error) {
+        return null;
       }
     }
 
@@ -799,6 +843,10 @@ function script(documents, config) {
 
     hideLoader() {
       this.loader.classList.toggle("hidden", true);
+    }
+
+    showLoader() {
+      this.loader.classList.toggle("hidden", false);
     }
 
     getQueryParameter(param) {
