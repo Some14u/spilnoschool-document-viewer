@@ -68,8 +68,10 @@ function buildWidget() {
 
   try {
     console.log('📝 Processing CSS component...');
-    delete require.cache[path.join(componentsDir, 'css.js')];
-    require(path.join(componentsDir, 'css.js'));
+    const cssModule = path.join(componentsDir, 'css.js');
+    const cssKey = require.resolve(cssModule);
+    delete require.cache[cssKey];
+    require(cssKey);
   } catch (error) {
     generateErrorPage('CSS', error, distDir);
     buildSuccess = false;
@@ -78,8 +80,10 @@ function buildWidget() {
   if (buildSuccess) {
     try {
       console.log('⚡ Processing JavaScript component...');
-      delete require.cache[path.join(componentsDir, 'javascript.js')];
-      require(path.join(componentsDir, 'javascript.js'));
+      const jsModule = path.join(componentsDir, 'javascript.js');
+      const jsKey = require.resolve(jsModule);
+      delete require.cache[jsKey];
+      require(jsKey);
     } catch (error) {
       generateErrorPage('JavaScript', error, distDir);
       buildSuccess = false;
@@ -89,8 +93,10 @@ function buildWidget() {
   if (buildSuccess) {
     try {
       console.log('🏗️  Processing HTML component...');
-      delete require.cache[path.join(componentsDir, 'html.js')];
-      require(path.join(componentsDir, 'html.js'));
+      const htmlModule = path.join(componentsDir, 'html.js');
+      const htmlKey = require.resolve(htmlModule);
+      delete require.cache[htmlKey];
+      require(htmlKey);
     } catch (error) {
       generateErrorPage('HTML', error, distDir);
       buildSuccess = false;
