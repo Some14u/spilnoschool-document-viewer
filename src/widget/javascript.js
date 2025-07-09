@@ -77,11 +77,11 @@ function script(documents, config) {
 
     shouldShowDownloadButton() {
       const currentDoc = this.documents[this.currentIndex];
-      
-      const allowDownload = currentDoc?.allowDownload !== undefined 
-        ? currentDoc.allowDownload 
+
+      const allowDownload = currentDoc?.allowDownload !== undefined
+        ? currentDoc.allowDownload
         : (this.config.allowDownload !== undefined ? this.config.allowDownload : true);
-      
+
       if (!allowDownload) {
         return false;
       }
@@ -544,7 +544,7 @@ function script(documents, config) {
       // Apply anchor-top for video content, but NOT for showAsLink documents
       const isVideoContent = documentFormat.startsWith("video/");
       const isShowAsLink = currentDoc && currentDoc.showAsLink;
-      
+
       if (isVideoContent && !isShowAsLink) {
         this.controlButtonsContainer.classList.add("anchor-top");
       } else {
@@ -711,25 +711,26 @@ function script(documents, config) {
       this.showLoader();
 
       try {
-        const response = await fetch(documentUrl);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        URL.revokeObjectURL(url);
+        const blob = await this.fetchFileAsBlob(documentUrl);
+        this.createDownloadFromBlob(blob, fileName);
+        
       } catch (error) {
-        console.warn('Fetch download failed, falling back to direct link:', error);
+        const currentFormat = this.getCurrentFormat().toLowerCase();
+        const isImageFormat = currentFormat.startsWith('image/');
+        
+        if (isImageFormat) {
+          try {
+            const proxyUrl = `https://sim.simulator.company/api/1.0/image?src=${encodeURIComponent(documentUrl)}`;
+            const blob = await this.fetchFileAsBlob(proxyUrl);
+            this.createDownloadFromBlob(blob, fileName);
+            return;
+            
+          } catch (proxyError) {
+          }
+        }
+        
         window.open(documentUrl, '_blank');
+        
       } finally {
         this.hideLoader();
       }
@@ -743,6 +744,25 @@ function script(documents, config) {
       } catch (error) {
         return null;
       }
+    }
+
+    async fetchFileAsBlob(url) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.blob();
+    }
+
+    createDownloadFromBlob(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
     updateToggleButtonState() {
