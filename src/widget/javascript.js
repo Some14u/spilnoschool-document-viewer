@@ -1271,6 +1271,7 @@ function script(documents, config) {
         this.showDocumentDescription();
         this.updateNavButtonVisibility();
         this.setupFullscreenButton();
+        this.setupDownloadButton();
         return;
       }
 
