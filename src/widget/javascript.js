@@ -31,7 +31,6 @@ function script(documents, config) {
       this.fullscreenBtn = document.getElementById("fullscreenBtn");
       this.toggleDescriptionBtn = document.getElementById("toggleDescriptionBtn");
       this.controlButtonsContainer = document.getElementById("controlButtonsContainer");
-      this.downloadLink = document.getElementById("downloadLink");
       this.downloadBtn = document.getElementById("downloadBtn");
 
       this.galleryNavPrevHandler = null;
@@ -400,6 +399,7 @@ function script(documents, config) {
             this.loadDocument(this.currentIndex);
             this.showDocumentDescription();
             this.updateNavButtonVisibility();
+            this.showNavButtons();
 
             console.log("Document selected successfully, new index:", this.currentIndex);
           } else {
@@ -681,9 +681,14 @@ function script(documents, config) {
     }
 
     setupDownloadButton() {
+      if (!this.downloadBtn) {
+        console.warn('Download button not found in DOM');
+        return;
+      }
+
       if (this.shouldShowDownloadButton()) {
-        this.downloadLink.classList.remove("hidden");
         this.downloadBtn.classList.remove("hidden");
+        this.downloadBtn.classList.remove("fade-out");
 
         this.downloadBtn.replaceWith(this.downloadBtn.cloneNode(true));
         this.downloadBtn = document.getElementById("downloadBtn");
@@ -693,8 +698,8 @@ function script(documents, config) {
           await this.downloadFile();
         });
       } else {
-        this.downloadLink.classList.add("hidden");
         this.downloadBtn.classList.add("hidden");
+        this.downloadBtn.classList.add("fade-out");
       }
     }
 
