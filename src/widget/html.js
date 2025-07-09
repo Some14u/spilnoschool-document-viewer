@@ -45,13 +45,11 @@ data.html = `<!DOCTYPE html>
         </svg>
       </button>
 
-      <a id="downloadLink" class="download-link hidden">
-        <button id="downloadBtn" class="download-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-            <path fill="none" stroke="currentColor" stroke-width="22" d="m147 70-47 48-47-48m-25 45v51h144v-51M100 10v108" />
-          </svg>
-        </button>
-      </a>
+      <button id="downloadBtn" class="download-btn hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+          <path fill="none" stroke="currentColor" stroke-width="22" d="m147 70-47 48-47-48m-25 45v51h144v-51M100 10v108" />
+        </svg>
+      </button>
 
       <button id="fullscreenBtn" class="fullscreen-btn hidden">
         <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
